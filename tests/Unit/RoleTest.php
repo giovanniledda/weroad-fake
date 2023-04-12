@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class RoleTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -42,11 +41,11 @@ class RoleTest extends TestCase
         $this->assertDatabaseCount('roles', 2);
 
         $this->assertDatabaseHas('roles', [
-            'name' => 'admin'
+            'name' => 'admin',
         ]);
 
         $this->assertDatabaseHas('roles', [
-            'name' => 'editor'
+            'name' => 'editor',
         ]);
     }
 

@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Enums\Mood;
+use function collect;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use function collect;
 use function now;
 
 class Travel extends Model
@@ -23,26 +23,26 @@ class Travel extends Model
     ];
 
     protected $hidden = [
-        'publicationDate'
+        'publicationDate',
     ];
 
     protected $appends = [
-        'isPublic'
+        'isPublic',
     ];
 
     protected $casts = [
         'moods' => 'array',
     ];
 
-    public function tours(): HasMany {
-
+    public function tours(): HasMany
+    {
         return $this->hasMany(Tour::class, 'travelId');
     }
 
     public function publish(): self
     {
         $this->update([
-            'publicationDate' => now()
+            'publicationDate' => now(),
         ]);
 
         return $this;
@@ -51,7 +51,7 @@ class Travel extends Model
     public function unpublish(): self
     {
         $this->update([
-            'publicationDate' => null
+            'publicationDate' => null,
         ]);
 
         return $this;
@@ -63,7 +63,7 @@ class Travel extends Model
     protected function isPublic(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => !is_null($attributes['publicationDate']),
+            get: fn (mixed $value, array $attributes) => ! is_null($attributes['publicationDate']),
         );
     }
 
@@ -73,8 +73,8 @@ class Travel extends Model
             'moods' => [
                 'moods' => collect(Mood::cases())->flatMap(function (Mood $mood) {
                     return [$mood->value => 0];
-                })->toArray()
-            ]
+                })->toArray(),
+            ],
         ]);
 
         return $this;
@@ -88,8 +88,8 @@ class Travel extends Model
             'moods' => [
                 'moods' => collect(Mood::cases())->flatMap(function (Mood $mood) use ($oldMoods, $value, $moodToUpdate) {
                     return [$mood->value => ($mood->value == $moodToUpdate->value) ? $value : $oldMoods[$mood->value]];
-                })->toArray()
-            ]
+                })->toArray(),
+            ],
         ]);
 
         return $this;

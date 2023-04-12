@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\Role as RoleEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +18,7 @@ class Tour extends Model
         'startingDate' => 'date',
         'endingDate' => 'date',
     ];
+
     public function travel(): BelongsTo
     {
         return $this->belongsTo(Travel::class, 'travelId');
@@ -49,5 +49,4 @@ class Tour extends Model
     {
         $builder->whereBetween('startingDate', [$from, $to]);
     }
-
 }

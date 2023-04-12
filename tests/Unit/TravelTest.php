@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class TravelTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -20,7 +19,7 @@ class TravelTest extends TestCase
 
         $this->assertDatabaseHas('travels', [
             'id' => $travel->id,
-            'slug' => Str::slug($travel->name)
+            'slug' => Str::slug($travel->name),
         ]);
     }
 
@@ -79,7 +78,7 @@ class TravelTest extends TestCase
     {
         /** @var Travel $travel */
         $travel = Travel::factory()->create([
-            'days' => 6
+            'days' => 6,
         ]);
 
         $travel->refresh();
@@ -102,8 +101,8 @@ class TravelTest extends TestCase
                 'relax' => 0,
                 'history' => 0,
                 'culture' => 0,
-                'party' => 0
-            ]
+                'party' => 0,
+            ],
         ];
 
         $this->assertEquals($moods, $travel->moods);
@@ -134,13 +133,12 @@ class TravelTest extends TestCase
                 'relax' => 30,
                 'history' => 100,
                 'culture' => 90,
-                'party' => 20
-            ]
+                'party' => 20,
+            ],
         ];
 
         $travel->refresh();
 
         $this->assertEquals($moods, $travel->moods);
     }
-
 }

@@ -2,15 +2,14 @@
 
 namespace Tests\Unit;
 
-use App\Models\Role;
 use App\Enums\Role as RoleEnum;
+use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\Production\RoleSeeder;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -43,7 +42,7 @@ class UserTest extends TestCase
 
         $this->assertDatabaseHas('role_user', [
             'userId' => $user->id,
-            'roleId' => Role::findByName(RoleEnum::Admin->value)->id
+            'roleId' => Role::findByName(RoleEnum::Admin->value)->id,
         ]);
     }
 
@@ -61,14 +60,14 @@ class UserTest extends TestCase
 
         $this->assertDatabaseHas('role_user', [
             'userId' => $user->id,
-            'roleId' => Role::findByName(RoleEnum::Admin->value)->id
+            'roleId' => Role::findByName(RoleEnum::Admin->value)->id,
         ]);
 
         $user->removeRole(RoleEnum::Admin);
 
         $this->assertDatabaseMissing('role_user', [
             'userId' => $user->id,
-            'roleId' => Role::findByName(RoleEnum::Admin->value)->id
+            'roleId' => Role::findByName(RoleEnum::Admin->value)->id,
         ]);
     }
 

@@ -10,7 +10,6 @@ class TravelObserver
     /**
      * Handle the Travel "creating" event.
      *
-     * @param  \App\Models\Travel  $travel
      * @return void
      */
     public function creating(Travel $travel)
@@ -23,7 +22,6 @@ class TravelObserver
     /**
      * Handle the Travel "created" event.
      *
-     * @param  \App\Models\Travel  $travel
      * @return void
      */
     public function created(Travel $travel)
@@ -34,19 +32,16 @@ class TravelObserver
     /**
      * Handle the Travel "updating" event.
      *
-     * @param  \App\Models\Travel  $travel
      * @return void
      */
     public function updating(Travel $travel)
     {
         $travel->slug = Str::slug($travel->name);
-
     }
 
     /**
      * Handle the Travel "deleted" event.
      *
-     * @param  \App\Models\Travel  $travel
      * @return void
      */
     public function deleted(Travel $travel)
@@ -57,7 +52,6 @@ class TravelObserver
     /**
      * Handle the Travel "restored" event.
      *
-     * @param  \App\Models\Travel  $travel
      * @return void
      */
     public function restored(Travel $travel)
@@ -68,7 +62,6 @@ class TravelObserver
     /**
      * Handle the Travel "force deleted" event.
      *
-     * @param  \App\Models\Travel  $travel
      * @return void
      */
     public function forceDeleted(Travel $travel)

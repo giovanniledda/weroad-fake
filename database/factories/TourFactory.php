@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Travel;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use function fake;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use function now;
 use function rand;
 

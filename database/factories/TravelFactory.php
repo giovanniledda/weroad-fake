@@ -20,7 +20,7 @@ class TravelFactory extends Factory
     {
         return [
             'publicationDate' => now()->subDays(rand(1, 7)),
-            'name' => fake()->country . ' ' . fake()->colorName,
+            'name' => fake()->country.' '.fake()->colorName,
             'description' => fake()->realText(250),
             'days' => fake()->numberBetween(1, 365),
         ];

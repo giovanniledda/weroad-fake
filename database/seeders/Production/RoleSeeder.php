@@ -17,7 +17,6 @@ class RoleSeeder extends Seeder
     public function run()
     {
         foreach (RoleEnum::cases() as $role) {
-
             Role::firstOrCreate(['name' => $role->value]);
         }
     }

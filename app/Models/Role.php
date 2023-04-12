@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use function config;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use function config;
 
 class Role extends Model
 {
@@ -22,7 +22,7 @@ class Role extends Model
     public static function findByName(string $name): static
     {
         return Cache::remember(
-            'role_' . Str::snake($name),
+            'role_'.Str::snake($name),
             config('cache_duration_in_secs'),
             function () use ($name) {
                 return Role::whereName($name)->sole();

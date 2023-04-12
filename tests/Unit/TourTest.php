@@ -5,8 +5,6 @@ namespace Tests\Unit;
 use App\Models\Tour;
 use App\Models\Travel;
 use Tests\TestCase;
-use function now;
-use function rand;
 
 class TourTest extends TestCase
 {
@@ -34,7 +32,7 @@ class TourTest extends TestCase
     {
         /** @var Tour $tour */
         $tour = Tour::factory()->create([
-            'price' => 999
+            'price' => 999,
         ]);
 
         $this->assertDatabaseHas('tours', [
@@ -52,24 +50,24 @@ class TourTest extends TestCase
     {
         /** @var Travel $travelJOR */
         $travelJOR = Travel::factory()->create([
-            'name' => 'Jordan 360°'
+            'name' => 'Jordan 360°',
         ]);
 
         Tour::factory()
             ->count(10)
             ->create([
-                'travelId' => $travelJOR->id
+                'travelId' => $travelJOR->id,
             ]);
 
         /** @var Travel $travelICE */
         $travelICE = Travel::factory()->create([
-            'name' => 'Iceland: hunting for the Northern Lights'
+            'name' => 'Iceland: hunting for the Northern Lights',
         ]);
 
         Tour::factory()
             ->count(15)
             ->create([
-                'travelId' => $travelICE->id
+                'travelId' => $travelICE->id,
             ]);
 
         $this->assertCount(25, Tour::all());
@@ -86,30 +84,29 @@ class TourTest extends TestCase
     {
         /** @var Travel $travelJOR */
         $travelJOR = Travel::factory()->create([
-            'name' => 'Jordan 360°'
+            'name' => 'Jordan 360°',
         ]);
 
         Tour::factory()
             ->count(5)
             ->create([
                 'travelId' => $travelJOR->id,
-                'price' => 1200
+                'price' => 1200,
             ]);
 
         Tour::factory()
             ->count(10)
             ->create([
                 'travelId' => $travelJOR->id,
-                'price' => 900
+                'price' => 900,
             ]);
 
         Tour::factory()
             ->count(15)
             ->create([
                 'travelId' => $travelJOR->id,
-                'price' => 400
+                'price' => 400,
             ]);
-
 
         $this->assertCount(30, Tour::all());
 
@@ -131,7 +128,6 @@ class TourTest extends TestCase
                                                 ->get());
     }
 
-
     /**
      * @test
      */
@@ -139,7 +135,7 @@ class TourTest extends TestCase
     {
         /** @var Travel $travelJOR */
         $travelJOR = Travel::factory()->create([
-            'name' => 'Jordan 360°'
+            'name' => 'Jordan 360°',
         ]);
 
         Tour::factory()
