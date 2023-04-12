@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Mood;
+use App\Traits\HasPublicUuids;
 use function collect;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use function now;
 
 class Travel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPublicUuids;
 
     protected $table = 'travels';
 
@@ -23,6 +24,7 @@ class Travel extends Model
     ];
 
     protected $hidden = [
+        'id',
         'publicationDate',
     ];
 

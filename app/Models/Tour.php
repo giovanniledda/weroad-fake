@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasPublicUuids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,13 +11,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Tour extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPublicUuids;
 
     protected $table = 'tours';
 
     protected $casts = [
         'startingDate' => 'date',
         'endingDate' => 'date',
+    ];
+
+    protected $guarded = [
+        'id',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'id',
     ];
 
     public function travel(): BelongsTo

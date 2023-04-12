@@ -26,6 +26,7 @@ return new class extends Migration
 
             // Indexes
             $table->index(['price', 'startingDate']);
+            $table->uuid('uuid')->unique();
 
             $table->timestamps();
         });

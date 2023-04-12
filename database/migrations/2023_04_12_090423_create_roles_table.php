@@ -18,6 +18,9 @@ return new class extends Migration
 
             $table->string('name', 20)->index();
 
+            // Indexes
+            $table->uuid('uuid')->unique();
+
             $table->timestamps();
         });
     }

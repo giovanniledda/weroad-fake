@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Role as RoleEnum;
+use App\Traits\HasPublicUuids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasPublicUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -32,7 +33,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        //        'id',
+        'id',
         'password',
         'remember_token',
     ];
@@ -46,19 +47,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-//    public function getRouteKeyName()
-//    {
-//        return 'uuid';
-//    }
-
     public function roles(): BelongsToMany
     {
-//        return $this->belongsToMany(Role::class);
         return $this->belongsToMany(Role::class, 'role_user', 'userId', 'roleId');
     }
 
