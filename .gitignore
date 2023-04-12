@@ -18,3 +18,4 @@ yarn-error.log
 /.vscode
 composer.json
 laravel-hiring-test-master
+auth.json
