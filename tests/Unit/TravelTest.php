@@ -74,6 +74,20 @@ class TravelTest extends TestCase
     /**
      * @test
      */
+    public function public_and_private_travels_can_be_filtered()
+    {
+        $publicTravels = Travel::factory()->count(10)->create();
+
+        $privateTravels = Travel::factory()->private()->count(5)->create();
+
+        $this->assertCount(10, Travel::public()->get());
+
+        $this->assertCount(5, Travel::private()->get());
+    }
+
+    /**
+     * @test
+     */
     public function travels_nights_are_days_plus_one()
     {
         /** @var Travel $travel */

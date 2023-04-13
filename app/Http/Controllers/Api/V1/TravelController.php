@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTourRequest;
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequest;
+use App\Http\Resources\Collections\TravelResourceCollection;
 use App\Http\Resources\TourResource;
 use App\Http\Resources\TravelResource;
 use App\Models\Tour;
 use App\Models\Travel;
+use function config;
 use function ray;
 
 class TravelController extends Controller
@@ -17,10 +19,11 @@ class TravelController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return TravelResourceCollection
      */
     public function index()
     {
+        return new TravelResourceCollection(Travel::public()->fastPaginate(config('page_size')));
     }
 
     /**
@@ -36,17 +39,6 @@ class TravelController extends Controller
         $travel = Travel::create($validated);
 
         return new TravelResource($travel);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Travel  $travel
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Travel $travel)
-    {
-        //
     }
 
     /**
@@ -72,17 +64,6 @@ class TravelController extends Controller
         $tour = $travel->tours()->create($validated);
 
         return new TourResource($tour);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Travel  $travel
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Travel $travel)
-    {
-        //
     }
 
 
