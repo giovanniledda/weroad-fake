@@ -2,28 +2,25 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use function config;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTourRequest;
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequest;
-use App\Http\Resources\Collections\TravelResourceCollection;
 use App\Http\Resources\TourResource;
 use App\Http\Resources\TravelResource;
-use App\Models\Tour;
 use App\Models\Travel;
-use function config;
-use function ray;
 
 class TravelController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return TravelResourceCollection
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
-        return new TravelResourceCollection(Travel::public()->fastPaginate(config('page_size')));
+        return TravelResource::collection(Travel::public()->fastPaginate(config('app.page_size')));
     }
 
     /**

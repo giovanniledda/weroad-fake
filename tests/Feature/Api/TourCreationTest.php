@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use App\Models\Tour;
 use App\Models\Travel;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use function now;
@@ -67,14 +68,38 @@ class TourCreationTest extends TestCase
 
         $newTour = Tour::factory()->raw([
             'travelId' => null,
-            'startingDate' => now()->addMonth(),
-            'endingDate' => now()->addMonths(7),
+            'startingDate' => now()->addMonth()->format('Y-m-d'),
+            'endingDate' => now()->addMonths(7)->format('Y-m-d'),
         ]);
 
         $response = $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
             ->assertStatus(201);
 
-//        ray($response->json());
+        $createdTour = Tour::find(1);
+
+        /**
+         * Example:
+         *   {
+                "id": "2a0edc99-c9fe-4206-8da5-413586667a21",
+                "travelId": "d408be33-aa6a-4c73-a2c8-58a70ab2ba4d",
+                "name": "ITJOR20211101",
+                "startingDate": "2021-11-01",
+                "endingDate": "2021-11-09",
+                "price": 199900
+                },
+         *
+         */
+
+        $response
+            ->assertJson(fn (AssertableJson $json) =>
+            $json->where('id', $createdTour->uuid)
+                ->where('travelId', $travel->uuid)
+                ->where('name', $newTour['name'])
+                ->where('startingDate', $newTour['startingDate'])
+                ->where('endingDate', $newTour['endingDate'])
+                ->where('price', $newTour['price'])
+                ->etc()
+            );
 
         $this->assertDatabaseHas('tours', [
             'name' => $newTour['name'],

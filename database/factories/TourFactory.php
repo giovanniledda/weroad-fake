@@ -22,8 +22,8 @@ class TourFactory extends Factory
     {
         return [
             'name' => fake()->regexify('IT[A-Z]{3}[0-9]{8}'),
-            'startingDate' => now()->addMonths(rand(1, 12)),
-            'endingDate' => now()->addMonths(rand(3, 24)),
+            'startingDate' => now()->addMonths(rand(1, 12))->format('Y-m-d'),
+            'endingDate' => now()->addMonths(rand(3, 24))->format('Y-m-d'),
             'price' => fake()->randomNumber(5),
             'travelId' => Travel::factory(),
         ];

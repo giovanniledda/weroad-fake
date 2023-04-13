@@ -36,7 +36,7 @@ class Role extends Model
     {
         return Cache::remember(
             'role_'.Str::snake($name),
-            config('cache_duration_in_secs'),
+            config('app.cache_duration_in_secs'),
             function () use ($name) {
                 return Role::whereName($name)->sole();
             });
