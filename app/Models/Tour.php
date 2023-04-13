@@ -77,7 +77,7 @@ class Tour extends Model
         if (!is_null($from)) {
             $builder->where('startingDate', '>=', $from);
         }
-        
+
 //        $builder->whereBetween('startingDate', [$from, $to]);
     }
 }
