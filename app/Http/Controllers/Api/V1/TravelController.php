@@ -67,19 +67,19 @@ class TravelController extends Controller
 
     public function getTours(Request $request, Travel $travel)
     {
-//        ray('slug', $travel->slug);
-//        ray('tours', $travel->tours()->orderBy('startingDate')->get());
 
         // TODO: validate filters con una FormRequest
-
+        
         $orders = $travel
                     ->tours()
-                    ->when($request->has('priceFrom') || $request->has('priceTo'), function ($builder) use ($request) {
-                        $builder->byPrice(start: $request->get('priceFrom'), end: $request->get('priceTo'));
-                    })
-                    ->when($request->has('dateFrom') || $request->has('dateTo'), function ($builder) use ($request) {
-                        $builder->byStartingDate(from: $request->get('dateFrom'), to: $request->get('dateTo'));
-                    })
+//                    ->when($request->has('priceFrom') || $request->has('priceTo'), function ($builder) use ($request) {
+//                        $builder->byPrice(start: $request->get('priceFrom'), end: $request->get('priceTo'));
+//                    })
+//                    ->when($request->has('dateFrom') || $request->has('dateTo'), function ($builder) use ($request) {
+//                        $builder->byStartingDate(from: $request->get('dateFrom'), to: $request->get('dateTo'));
+//                    })
+                    ->byPrice(start: $request->get('priceFrom'), end: $request->get('priceTo'))
+                    ->byStartingDate(from: $request->get('dateFrom'), to: $request->get('dateTo'))
                     ->orderBy('startingDate')
                     ->fastPaginate(config('app.page_size'));
 
