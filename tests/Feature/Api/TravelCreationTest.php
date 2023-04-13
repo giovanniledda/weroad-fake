@@ -6,7 +6,7 @@ use App\Models\Travel;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class TravelTest extends TestCase
+class TravelCreationTest extends TestCase
 {
     /**
      * @test
@@ -16,9 +16,9 @@ class TravelTest extends TestCase
 
         $travel = Travel::factory()->raw();
 
-        $response = $this->post('api/v1/travels', $travel);
-
-        $response->assertRedirect('api/v1/login');
+        $response = $this->post('api/v1/travels', $travel)
+//                         ->assertStatus(401)
+                         ->assertRedirect('api/v1/login'); // TODO: perché redirect e non 401?
     }
 
     /**
@@ -41,6 +41,7 @@ class TravelTest extends TestCase
 
     /**
      * @test
+     * TODO: verificare il json
      */
     public function admins_can_create_new_travels()
     {
@@ -82,8 +83,7 @@ class TravelTest extends TestCase
 
         $response = $this->postJson('api/v1/travels', $travel)
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('name')
-        ;
+            ->assertJsonValidationErrorFor('name');
 
         $this->assertDatabaseMissing('travels', [
             'name' => $name
@@ -108,8 +108,7 @@ class TravelTest extends TestCase
 
         $response = $this->postJson('api/v1/travels', $travel)
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('description')
-        ;
+            ->assertJsonValidationErrorFor('description');
 
         $this->assertDatabaseMissing('travels', [
             'description' => $description
@@ -135,8 +134,7 @@ class TravelTest extends TestCase
 
         $response = $this->postJson('api/v1/travels', $travel)
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('days')
-        ;
+            ->assertJsonValidationErrorFor('days');
 
         $this->assertDatabaseMissing('travels', [
             'days' => $days

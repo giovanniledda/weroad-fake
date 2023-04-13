@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Role;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\V1\TravelController;
 use Illuminate\Http\Request;
@@ -23,10 +24,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::middleware('admin')->group(function () {
-        Route::resource('travels', TravelController::class)->only([
-            'create', 'store', 'update', 'destroy'
-        ]);
+    // TODO: refactor
+//    Route::controller(TravelController::class)->group(function () {
+//
+//    });
 
+    Route::middleware('role:'.Role::Editor->value)->group(function () {
+        Route::resource('travels', TravelController::class)->only([
+            'update'
+        ]);
+    });
+
+    Route::middleware('role:'.Role::Admin->value)->group(function () {
+        Route::resource('travels', TravelController::class)->only([
+            'create', 'store', 'destroy'
+        ]);
     });
 });

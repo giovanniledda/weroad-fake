@@ -18,7 +18,7 @@ class CheckIsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->user()->hasRole(Role::Admin)) {
+        if (!$request->user()->hasRole(Role::Admin->value)) {
             abort(401);
         }
 

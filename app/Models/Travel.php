@@ -29,7 +29,7 @@ class Travel extends Model
     ];
 
     protected $appends = [
-        'isPublic',
+//        'isPublic',
     ];
 
     protected $casts = [

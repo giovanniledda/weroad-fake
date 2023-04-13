@@ -35,7 +35,7 @@ class UserTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $user->assignRole(RoleEnum::Admin);
+        $user->assignRole(RoleEnum::Admin->value);
 
         $this->assertDatabaseHas('role_user', [
             'userId' => $user->id,
@@ -51,14 +51,14 @@ class UserTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $user->assignRole(RoleEnum::Admin);
+        $user->assignRole(RoleEnum::Admin->value);
 
         $this->assertDatabaseHas('role_user', [
             'userId' => $user->id,
             'roleId' => Role::findByName(RoleEnum::Admin->value)->id,
         ]);
 
-        $user->removeRole(RoleEnum::Admin);
+        $user->removeRole(RoleEnum::Admin->value);
 
         $this->assertDatabaseMissing('role_user', [
             'userId' => $user->id,
@@ -74,9 +74,9 @@ class UserTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $user->assignRole(RoleEnum::Admin);
+        $user->assignRole(RoleEnum::Admin->value);
 
-        $this->assertTrue($user->hasRole(RoleEnum::Admin));
+        $this->assertTrue($user->hasRole(RoleEnum::Admin->value));
     }
 
     /**
@@ -87,13 +87,13 @@ class UserTest extends TestCase
         User::factory()
             ->count(10)
             ->create()->each(function (User $user) {
-                $user->assignRole(RoleEnum::Admin);
+                $user->assignRole(RoleEnum::Admin->value);
             });
 
         User::factory()
             ->count(15)
             ->create()->each(function (User $user) {
-                $user->assignRole(RoleEnum::Editor);
+                $user->assignRole(RoleEnum::Editor->value);
             });
 
         $this->assertDatabaseCount('users', 25);

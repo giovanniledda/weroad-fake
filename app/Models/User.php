@@ -52,43 +52,43 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'role_user', 'userId', 'roleId');
     }
 
-    public function assignRole(RoleEnum $role): self
+    public function assignRole(string $role): self
     {
-        $role = Role::findByName($role->value);
+        $role = Role::findByName($role);
 
         $this->roles()->attach($role->id);
 
         return $this;
     }
 
-    public function removeRole(RoleEnum $role): self
+    public function removeRole(string $role): self
     {
-        $role = Role::findByName($role->value);
+        $role = Role::findByName($role);
 
         $this->roles()->detach($role->id);
 
         return $this;
     }
 
-    public function hasRole(RoleEnum $role): bool
+    public function hasRole(string $role): bool
     {
-        $role = Role::findByName($role->value);
+        $role = Role::findByName($role);
 
         return $this->roles->contains($role->id);
     }
 
-    public function scopeWithRole(Builder $builder, RoleEnum $role): void
+    public function scopeWithRole(Builder $builder, string $role): void
     {
-        $builder->whereRelation('roles', 'name', $role->value);
+        $builder->whereRelation('roles', 'name', $role);
     }
 
     public function scopeAdmin(Builder $builder): void
     {
-        $builder->withRole(RoleEnum::Admin);
+        $builder->withRole(RoleEnum::Admin->value);
     }
 
     public function scopeEditor(Builder $builder): void
     {
-        $builder->withRole(RoleEnum::Editor);
+        $builder->withRole(RoleEnum::Editor->value);
     }
 }

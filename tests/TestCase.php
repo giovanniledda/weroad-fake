@@ -28,7 +28,7 @@ abstract class TestCase extends BaseTestCase
         /** @var User $editor */
         $editor = User::factory()->create();
 
-        $editor->assignRole(RoleEnum::Editor);
+        $editor->assignRole(RoleEnum::Editor->value);
 
         return $editor;
     }
@@ -38,7 +38,8 @@ abstract class TestCase extends BaseTestCase
         /** @var User $admin */
         $admin = User::factory()->create();
 
-        $admin->assignRole(RoleEnum::Admin);
+        $admin->assignRole(RoleEnum::Admin->value)
+              ->assignRole(RoleEnum::Editor->value); // an Admin is also an Editor
 
         return $admin;
     }
