@@ -13,12 +13,13 @@ class TravelListTest extends TestCase
 {
     /**
      * @test
+     * @dataProvider pages
      */
-    public function guests_can_access_all_public_travels_paginated()
+    public function guests_can_access_all_public_travels_paginated(int $page)
     {
 
         $travels = Travel::factory()
-            ->count(100)
+            ->count(config('app.page_size') * 10)
             ->create();
 
         $response = $this->getJson('api/v1/travels')
@@ -59,7 +60,9 @@ class TravelListTest extends TestCase
             );
 
         // test pagination
-        $page = 4;
+//        $page = 4;
+
+        ray('page: '. $page);
 
         $response2 = $this->getJson('api/v1/travels?page='.$page)
             ->assertStatus(200);
@@ -84,5 +87,9 @@ class TravelListTest extends TestCase
         );
     }
 
+    public function pages(): array
+    {
+        return [range(1, 9)];
+    }
 
 }
