@@ -15,7 +15,6 @@ class TourTest extends TestCase
     {
         $tours = Tour::factory()
             ->count(3)
-//            ->for(Travel::factory())
             ->create();
 
         $this->assertInstanceOf(Travel::class, $tours[0]->travel);
@@ -143,7 +142,7 @@ class TourTest extends TestCase
             ->create([
                 'travelId' => $travelJOR->id,
                 'startingDate' => '2023-06-01',
-                'endingDate' => '2023-06-31',
+                'endingDate' => '2023-06-30',
                 'price' => 1400,
             ]);
 

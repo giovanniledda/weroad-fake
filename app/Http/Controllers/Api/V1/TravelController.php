@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use function config;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTourRequest;
 use App\Http\Requests\StoreTravelRequest;
@@ -10,6 +11,7 @@ use App\Http\Requests\UpdateTravelRequest;
 use App\Http\Resources\TourResource;
 use App\Http\Resources\TravelResource;
 use App\Models\Travel;
+use function ray;
 
 class TravelController extends Controller
 {
@@ -63,5 +65,25 @@ class TravelController extends Controller
         return new TourResource($tour);
     }
 
+    public function getTours(Request $request, Travel $travel)
+    {
+//        ray('slug', $travel->slug);
+//        ray('tours', $travel->tours()->orderBy('startingDate')->get());
+
+        // TODO: validate filters con una FormRequest
+
+        $orders = $travel
+                    ->tours()
+                    ->when($request->has('priceFrom') || $request->has('priceTo'), function ($builder) use ($request) {
+                        $builder->byPrice(start: $request->get('priceFrom'), end: $request->get('priceTo'));
+                    })
+                    ->when($request->has('dateFrom') || $request->has('dateTo'), function ($builder) use ($request) {
+                        $builder->byStartingDate(from: $request->get('dateFrom'), to: $request->get('dateTo'));
+                    })
+                    ->orderBy('startingDate')
+                    ->fastPaginate(config('app.page_size'));
+
+        return TourResource::collection($orders);
+    }
 
 }

@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use function define;
+use function defined;
+use function is_null;
+
+defined('ENOUGH_HUGE_PRICE') or define('ENOUGH_HUGE_PRICE', 100000000000000000);
 
 class Tour extends Model
 {
@@ -56,11 +61,23 @@ class Tour extends Model
 
     public function scopeByPrice(Builder $builder, int $start, int $end): void
     {
-        $builder->whereBetween('price', [$start * 100, $end * 100]);
+        $calculatedStart = !is_null($start) ? ($start * 100) : 0;
+
+        $calculatedEnd = !is_null($end) ? ($end * 100) : ENOUGH_HUGE_PRICE;
+
+        $builder->whereBetween('price', [$calculatedStart, $calculatedEnd]);
     }
 
     public function scopeByStartingDate(Builder $builder, string $from, string $to): void
     {
-        $builder->whereBetween('startingDate', [$from, $to]);
+        if (!is_null($to)) {
+            $builder->where('startingDate', '<=', $to);
+        }
+
+        if (!is_null($from)) {
+            $builder->where('startingDate', '>=', $from);
+        }
+        
+//        $builder->whereBetween('startingDate', [$from, $to]);
     }
 }

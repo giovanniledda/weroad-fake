@@ -39,7 +39,8 @@ class TravelListTest extends TestCase
                       "history": 90,
                       "culture": 30,
                       "party": 10
-                    }
+                    },
+                    [...]
              */
 
         $end = config('app.page_size') - 1;

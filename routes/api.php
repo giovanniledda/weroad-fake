@@ -25,6 +25,9 @@ Route::resource('travels', TravelController::class)->only([
     'index'
 ]);
 
+// A public (no auth) endpoint to get a list of paginated tours by the travel `slug`.
+Route::get('/travels/{travel:slug}/tours', [TravelController::class, 'getTours'])->name('travels.getTours');
+
 Route::middleware(['auth:sanctum'])->group(function () {
 
     // API route for logout user
