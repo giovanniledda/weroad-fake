@@ -20,10 +20,8 @@ class TravelUpdateTest extends TestCase
 
         $travelNewData = Travel::factory()->raw();
 
-        $response = $this->putJson("api/v1/travels/{$uuid}", $travelNewData)
+        $this->putJson("api/v1/travels/{$uuid}", $travelNewData)
             ->assertStatus(401);
-
-//        $response->assertRedirect('api/v1/login');
     }
 
     /**

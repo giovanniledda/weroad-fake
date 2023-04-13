@@ -16,9 +16,8 @@ class TravelCreationTest extends TestCase
 
         $travel = Travel::factory()->raw();
 
-        $response = $this->post('api/v1/travels', $travel)
-//                         ->assertStatus(401)
-                         ->assertRedirect('api/v1/login'); // TODO: perché redirect e non 401?
+        $this->postJson('api/v1/travels', $travel)
+                         ->assertStatus(401);
     }
 
     /**
@@ -81,7 +80,7 @@ class TravelCreationTest extends TestCase
 
         unset($travel['name']);
 
-        $response = $this->postJson('api/v1/travels', $travel)
+        $this->postJson('api/v1/travels', $travel)
             ->assertStatus(422)
             ->assertJsonValidationErrorFor('name');
 
@@ -106,7 +105,7 @@ class TravelCreationTest extends TestCase
 
         unset($travel['description']);
 
-        $response = $this->postJson('api/v1/travels', $travel)
+        $this->postJson('api/v1/travels', $travel)
             ->assertStatus(422)
             ->assertJsonValidationErrorFor('description');
 
@@ -132,7 +131,7 @@ class TravelCreationTest extends TestCase
 
         unset($travel['days']);
 
-        $response = $this->postJson('api/v1/travels', $travel)
+        $this->postJson('api/v1/travels', $travel)
             ->assertStatus(422)
             ->assertJsonValidationErrorFor('days');
 
