@@ -15,7 +15,7 @@ class TravelListTest extends TestCase
      * @test
      * @dataProvider pages
      */
-    public function guests_can_access_all_public_travels_paginated(int $page)
+    public function guests_can_access_all_public_travels_paginated(array $paginationData)
     {
 
         $travels = Travel::factory()
@@ -60,9 +60,7 @@ class TravelListTest extends TestCase
             );
 
         // test pagination
-//        $page = 4;
-
-        ray('page: '. $page);
+        $page = $paginationData['page'];
 
         $response2 = $this->getJson('api/v1/travels?page='.$page)
             ->assertStatus(200);
@@ -89,7 +87,18 @@ class TravelListTest extends TestCase
 
     public function pages(): array
     {
-        return [range(1, 9)];
+        return [
+            [['page' => 1]],
+            [['page' => 2]],
+            [['page' => 3]],
+            [['page' => 4]],
+            [['page' => 5]],
+            [['page' => 6]],
+            [['page' => 7]],
+            [['page' => 8]],
+            [['page' => 9]],
+            [['page' => 10]],
+        ];
     }
 
 }

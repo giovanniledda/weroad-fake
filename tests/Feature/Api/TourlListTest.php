@@ -15,8 +15,9 @@ class TourlListTest extends TestCase
 {
     /**
      * @test
+     * @dataProvider pages
      */
-    public function guests_can_access_all_tours_paginated_by_travel_slug()
+    public function guests_can_access_all_tours_paginated_by_travel_slug(array $paginationData)
     {
 
         $travel = Travel::factory()->create();
@@ -70,7 +71,7 @@ class TourlListTest extends TestCase
             );
 
         // test pagination
-        $page = 2;
+        $page = $paginationData['page'];
 
         $response2 = $this->getJson("api/v1/travels/{$travelSlug}/tours?page=$page")
             ->assertStatus(200);
@@ -95,5 +96,20 @@ class TourlListTest extends TestCase
         );
     }
 
+    public function pages(): array
+    {
+        return [
+            [['page' => 1]],
+            [['page' => 2]],
+            [['page' => 3]],
+            [['page' => 4]],
+            [['page' => 5]],
+            [['page' => 6]],
+            [['page' => 7]],
+            [['page' => 8]],
+            [['page' => 9]],
+            [['page' => 10]],
+        ];
+    }
 
 }
