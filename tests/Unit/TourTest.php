@@ -121,6 +121,12 @@ class TourTest extends TestCase
         // wide range
         $this->assertCount(30, Tour::byPrice(start: 100, end: 1400)->get());
 
+        // wide range, skipping end
+        $this->assertCount(30, Tour::byPrice(start: 100)->get());
+
+        // skipping start
+        $this->assertCount(15, Tour::byPrice(end: 500)->get());
+
         // mix with slug
         $this->assertCount(30, Tour::byPrice(start: 100, end: 1400)
                                                 ->byTravelSlug($travelJOR->slug)
@@ -166,7 +172,7 @@ class TourTest extends TestCase
 
         $this->assertCount(30, Tour::all());
 
-        $this->assertCount(5, Tour::byStartingDate(from: '2023-05-01', to: '2023-06-31')->get());
+        $this->assertCount(5, Tour::byStartingDate(from: '2023-05-01', to: '2023-06-30')->get());
 
         $this->assertCount(10, Tour::byStartingDate(from: '2023-07-01', to: '2023-07-16')->get());
 
@@ -177,6 +183,12 @@ class TourTest extends TestCase
 
         // wide range
         $this->assertCount(30, Tour::byStartingDate(from: '2023-05-01', to: '2023-10-01')->get());
+
+        // wide range, skipping end
+        $this->assertCount(30, Tour::byStartingDate(from: '2023-05-01')->get());
+
+        // skipping start
+        $this->assertCount(5, Tour::byStartingDate(to: '2023-06-30')->get());
 
         // mix with slug and price
         $this->assertCount(25, Tour::byStartingDate(from: '2023-05-01', to: '2023-10-01')

@@ -59,7 +59,7 @@ class Tour extends Model
         $builder->whereRelation('travel', 'slug', $slug);
     }
 
-    public function scopeByPrice(Builder $builder, int $start, int $end): void
+    public function scopeByPrice(Builder $builder, ?int $start = null, ?int $end = null): void
     {
         $calculatedStart = !is_null($start) ? ($start * 100) : 0;
 
@@ -68,7 +68,7 @@ class Tour extends Model
         $builder->whereBetween('price', [$calculatedStart, $calculatedEnd]);
     }
 
-    public function scopeByStartingDate(Builder $builder, string $from, string $to): void
+    public function scopeByStartingDate(Builder $builder, ?string $from = null, ?string $to = null): void
     {
         if (!is_null($to)) {
             $builder->where('startingDate', '<=', $to);
