@@ -54,8 +54,6 @@ class RoleTest extends TestCase
      */
     public function a_role_can_be_retrieved_by_name()
     {
-        $this->seed(RoleSeeder::class);
-
         $adminRole = Role::findByName(RoleEnum::Admin->value);
 
         $this->assertEquals('admin', $adminRole->name);

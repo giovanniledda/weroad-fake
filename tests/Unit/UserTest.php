@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Enums\Role as RoleEnum;
 use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\Production\RoleSeeder;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -33,8 +32,6 @@ class UserTest extends TestCase
      */
     public function a_user_can_be_assigned_with_a_specific_role()
     {
-        $this->seed(RoleSeeder::class);
-
         /** @var User $user */
         $user = User::factory()->create();
 
@@ -51,8 +48,6 @@ class UserTest extends TestCase
      */
     public function a_user_can_be_removed_from_a_specific_role()
     {
-        $this->seed(RoleSeeder::class);
-
         /** @var User $user */
         $user = User::factory()->create();
 
@@ -76,8 +71,6 @@ class UserTest extends TestCase
      */
     public function a_user_can_be_checked_for_a_specific_role()
     {
-        $this->seed(RoleSeeder::class);
-
         /** @var User $user */
         $user = User::factory()->create();
 
@@ -91,8 +84,6 @@ class UserTest extends TestCase
      */
     public function admins_and_editors_can_be_retrieved()
     {
-        $this->seed(RoleSeeder::class);
-
         User::factory()
             ->count(10)
             ->create()->each(function (User $user) {
