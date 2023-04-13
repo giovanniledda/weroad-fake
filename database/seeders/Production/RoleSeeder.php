@@ -18,6 +18,8 @@ class RoleSeeder extends Seeder
     {
         foreach (RoleEnum::cases() as $role) {
             Role::firstOrCreate(['name' => $role->value]);
+
+            $this->command->info('Role created! ['.$role->name.': '.$role->value.']');
         }
     }
 }

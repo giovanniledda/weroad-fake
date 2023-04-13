@@ -32,7 +32,7 @@ class Role extends Model
         return $this->belongsToMany(User::class, 'role_user', 'roleId', 'userId');
     }
 
-    public static function findByName(string $name): static
+    public static function findByName(string $name): Role
     {
         return Cache::remember(
             'role_'.Str::snake($name),
