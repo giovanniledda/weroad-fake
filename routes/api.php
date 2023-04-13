@@ -39,5 +39,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::resource('travels', TravelController::class)->only([
             'create', 'store', 'destroy'
         ]);
+
+        Route::post('/travels/{travel}/tour', [TravelController::class, 'createTour'])->name('travels.createTour');
     });
 });

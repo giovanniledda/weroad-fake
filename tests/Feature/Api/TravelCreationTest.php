@@ -30,7 +30,6 @@ class TravelCreationTest extends TestCase
 
         $editor = $this->createEditor();
 
-        // Authenticate the user and attach the token to the request
         Sanctum::actingAs($editor);
 
         $response = $this->postJson('api/v1/travels', $travel);

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTourRequest;
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequest;
+use App\Http\Resources\TourResource;
 use App\Http\Resources\TravelResource;
+use App\Models\Tour;
 use App\Models\Travel;
 use function ray;
 
@@ -62,6 +65,15 @@ class TravelController extends Controller
         return new TravelResource($travel);
     }
 
+    public function createTour(StoreTourRequest $request, Travel $travel)
+    {
+        $validated = $request->validated();
+
+        $tour = $travel->tours()->create($validated);
+
+        return new TourResource($tour);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -72,4 +84,6 @@ class TravelController extends Controller
     {
         //
     }
+
+
 }
