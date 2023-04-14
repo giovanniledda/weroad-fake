@@ -27,7 +27,7 @@ class StoreTourRequest extends FormRequest
             'name' => 'required|unique:tours|max:140',
             'startingDate' => 'required|date|after:today',
             'endingDate' => 'sometimes|date|after:startingDate',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|gt:0',
         ];
     }
 }

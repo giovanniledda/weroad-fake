@@ -338,4 +338,33 @@ class TourCreationTest extends TestCase
             'travelId' => $travel->id,
         ]);
     }
+
+
+    /**
+     * @test
+     */
+    public function price_field_for_new_tours_must_be_greater_than_zero()
+    {
+        $admin = $this->createAdmin();
+
+        Sanctum::actingAs($admin);
+
+        $travel = Travel::factory()->create();
+
+        $uuid = $travel->uuid;
+
+        $newTour = Tour::factory()->raw([
+            'travelId' => null,
+            'price' => 0,
+        ]);
+
+        $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('price');
+
+        $this->assertDatabaseMissing('tours', [
+            'price' => 0,
+            'travelId' => $travel->id,
+        ]);
+    }
 }
