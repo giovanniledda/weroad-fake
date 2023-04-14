@@ -15,8 +15,6 @@ class TravelObserver
     public function creating(Travel $travel)
     {
         $travel->slug = Str::slug($travel->name);
-
-//        $travel->saveQuietly();
     }
 
     /**

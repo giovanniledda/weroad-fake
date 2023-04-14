@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasPublicUuids;
+use Illuminate\Support\Carbon;
 use function define;
 use function defined;
 use Illuminate\Database\Eloquent\Builder;
@@ -74,5 +75,10 @@ class Tour extends Model
         })->when(! empty($to), function ($builder) use ($to) {
             $builder->where('startingDate', '<=', $to);
         });
+    }
+
+    public function getCalculatedEndingDate(): string
+    {
+        return Carbon::createFromFormat('Y-m-d', $this->startingDate)->addDays($this->travel->days)->format('Y-m-d');
     }
 }

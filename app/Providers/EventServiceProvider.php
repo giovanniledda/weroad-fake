@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Tour;
 use App\Models\Travel;
+use App\Observers\TourObserver;
 use App\Observers\TravelObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -24,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
 
     protected $observers = [
         Travel::class => [TravelObserver::class],
+        Tour::class => [TourObserver::class],
     ];
 
     /**

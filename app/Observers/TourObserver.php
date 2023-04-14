@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Observers;
+
+use App\Models\Tour;
+use Illuminate\Support\Carbon;
+use function is_null;
+
+class TourObserver
+{
+    /**
+     * Handle the Tour "created" event.
+     *
+     * @param  \App\Models\Tour  $tour
+     * @return void
+     */
+    public function created(Tour $tour)
+    {
+        if (is_null($tour->endingDate)) {
+            $tour->endingDate = $tour->getCalculatedEndingDate();
+
+            $tour->saveQuietly();
+        }
+    }
+
+    /**
+     * Handle the Tour "updated" event.
+     *
+     * @param  \App\Models\Tour  $tour
+     * @return void
+     */
+    public function updated(Tour $tour)
+    {
+        if (is_null($tour->endingDate)) {
+            $tour->endingDate = $tour->getCalculatedEndingDate();
+
+            $tour->saveQuietly();
+        }
+    }
+
+    /**
+     * Handle the Tour "deleted" event.
+     *
+     * @param  \App\Models\Tour  $tour
+     * @return void
+     */
+    public function deleted(Tour $tour)
+    {
+        //
+    }
+
+    /**
+     * Handle the Tour "restored" event.
+     *
+     * @param  \App\Models\Tour  $tour
+     * @return void
+     */
+    public function restored(Tour $tour)
+    {
+        //
+    }
+
+    /**
+     * Handle the Tour "force deleted" event.
+     *
+     * @param  \App\Models\Tour  $tour
+     * @return void
+     */
+    public function forceDeleted(Tour $tour)
+    {
+        //
+    }
+}

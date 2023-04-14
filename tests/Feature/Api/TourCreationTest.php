@@ -4,8 +4,10 @@ namespace Tests\Feature\Api;
 
 use App\Models\Tour;
 use App\Models\Travel;
+use Illuminate\Support\Carbon;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
+use function fake;
 use function now;
 use Tests\TestCase;
 
@@ -51,7 +53,6 @@ class TourCreationTest extends TestCase
 
     /**
      * @test
-     * TODO: verificare il json
      */
     public function admins_can_create_new_tour_for_travels()
     {
@@ -135,7 +136,7 @@ class TourCreationTest extends TestCase
     /**
      * @test
      */
-    public function date_fields_for_new_tours_are_mandatory()
+    public function starting_date_field_for_new_tours_is_a_mandatory_valid_date()
     {
         $admin = $this->createAdmin();
 
@@ -156,15 +157,81 @@ class TourCreationTest extends TestCase
         // missing
         unset($newTour['startingDate']);
 
+        $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('startingDate');
+
+        // wrong date format
+        $newTour['startingDate'] = 'x91wkm129kwx21kx2190';
+
+        $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('startingDate');
+
+        $this->assertDatabaseMissing('tours', [
+            'startingDate' => $tourOriginalStartingDate,
+            'endingDate' => $tourOriginalEndingDate,
+            'travelId' => $travel->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function if_ending_date_field_for_new_tours_is_missing_then_travel_days_will_be_considered()
+    {
+        $admin = $this->createAdmin();
+
+        Sanctum::actingAs($admin);
+
+        $travel = Travel::factory()->create();
+
+        $uuid = $travel->uuid;
+
+        $newTour = Tour::factory()->raw([
+            'travelId' => null,
+        ]);
+
+        $tourOriginalStartingDate = $newTour['startingDate'];
+
+        $tourOriginalEndingDate = $newTour['endingDate'];
+
+        $tourNewEndingDate = Carbon::createFromFormat('Y-m-d', $tourOriginalStartingDate)->addDays($travel->days)->format('Y-m-d');
+
+        // missing
+        unset($newTour['endingDate']);
+
+        $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
+            ->assertStatus(201)
+            ->assertJsonMissingValidationErrors('startingDate')
+            ->assertJsonMissingValidationErrors('endingDate');
+
+        $this->assertDatabaseHas('tours', [
+            'id' => 1,
+            'startingDate' => $tourOriginalStartingDate,
+            'endingDate' => $tourNewEndingDate,
+            'travelId' => $travel->id,
+        ]);
+
         // wrong date format
         $newTour['endingDate'] = 'x91wkm129kwx21kx2190';
 
         $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('startingDate')
             ->assertJsonValidationErrorFor('endingDate');
 
-        $this->assertDatabaseMissing('tours', [
+        // forcing endingDate
+        $newTour['name'] = Tour::factory()->raw()['name'];
+        
+        $newTour['endingDate'] = $tourOriginalEndingDate;
+
+        $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
+            ->assertStatus(201)
+            ->assertJsonMissingValidationErrors('startingDate')
+            ->assertJsonMissingValidationErrors('endingDate');
+
+        $this->assertDatabaseHas('tours', [
+            'id' => 2,
             'startingDate' => $tourOriginalStartingDate,
             'endingDate' => $tourOriginalEndingDate,
             'travelId' => $travel->id,
