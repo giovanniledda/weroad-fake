@@ -3,9 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use function fake;
-use function now;
-use function rand;
 
 class StoreTourRequest extends FormRequest
 {

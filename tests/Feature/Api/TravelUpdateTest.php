@@ -13,7 +13,6 @@ class TravelUpdateTest extends TestCase
      */
     public function guests_cannot_update_travels()
     {
-
         $travel = Travel::factory()->create();
 
         $uuid = $travel->uuid;
@@ -29,7 +28,6 @@ class TravelUpdateTest extends TestCase
      */
     public function editors_can_update_travels()
     {
-
         $travel = Travel::factory()->create();
 
         $uuid = $travel->uuid;
@@ -46,7 +44,7 @@ class TravelUpdateTest extends TestCase
 
         $this->assertDatabaseHas('travels', [
             'uuid' => $uuid,
-            'name' => $travelNewData['name']
+            'name' => $travelNewData['name'],
         ]);
     }
 
@@ -55,7 +53,6 @@ class TravelUpdateTest extends TestCase
      */
     public function admins_can_update_travels()
     {
-
         $travel = Travel::factory()->create();
 
         $uuid = $travel->uuid;
@@ -72,17 +69,15 @@ class TravelUpdateTest extends TestCase
 
         $this->assertDatabaseHas('travels', [
             'uuid' => $uuid,
-            'name' => $travelNewData['name']
+            'name' => $travelNewData['name'],
         ]);
     }
-
 
     /**
      * @test
      */
     public function name_field_for_travels_is_mandatory()
     {
-
         $editor = $this->createEditor();
 
         Sanctum::actingAs($editor);
@@ -101,17 +96,16 @@ class TravelUpdateTest extends TestCase
 
         $response = $this->patchJson("api/v1/travels/{$uuid}", $travelNewData)
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('name')
-        ;
+            ->assertJsonValidationErrorFor('name');
 
         $this->assertDatabaseMissing('travels', [
             'uuid' => $uuid,
-            'name' => $newName
+            'name' => $newName,
         ]);
 
         $this->assertDatabaseHas('travels', [
             'uuid' => $uuid,
-            'name' => $oldName
+            'name' => $oldName,
         ]);
     }
 
@@ -120,7 +114,6 @@ class TravelUpdateTest extends TestCase
      */
     public function description_field_for_travels_is_mandatory()
     {
-
         $editor = $this->createEditor();
 
         Sanctum::actingAs($editor);
@@ -139,27 +132,24 @@ class TravelUpdateTest extends TestCase
 
         $response = $this->patchJson("api/v1/travels/{$uuid}", $travelNewData)
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('description')
-        ;
+            ->assertJsonValidationErrorFor('description');
 
         $this->assertDatabaseMissing('travels', [
             'uuid' => $uuid,
-            'description' => $newDescription
+            'description' => $newDescription,
         ]);
 
         $this->assertDatabaseHas('travels', [
             'uuid' => $uuid,
-            'description' => $oldDescription
+            'description' => $oldDescription,
         ]);
     }
-
 
     /**
      * @test
      */
     public function days_field_for_travels_is_mandatory()
     {
-
         $editor = $this->createEditor();
 
         Sanctum::actingAs($editor);
@@ -178,19 +168,16 @@ class TravelUpdateTest extends TestCase
 
         $response = $this->patchJson("api/v1/travels/{$uuid}", $travelNewData)
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('days')
-        ;
+            ->assertJsonValidationErrorFor('days');
 
         $this->assertDatabaseMissing('travels', [
             'uuid' => $uuid,
-            'days' => $newDays
+            'days' => $newDays,
         ]);
 
         $this->assertDatabaseHas('travels', [
             'uuid' => $uuid,
-            'days' => $oldDays
+            'days' => $oldDays,
         ]);
     }
-
-
 }

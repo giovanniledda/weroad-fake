@@ -2,12 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Database\Seeders\Production\RoleSeeder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use function bcrypt;
 use App\Enums\Role as RoleEnum;
 use App\Models\User;
+use function bcrypt;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 
 class CreateUser extends Command
@@ -80,7 +79,6 @@ class CreateUser extends Command
             }
 
             $user->assignRole(RoleEnum::Editor);
-
         } catch (ModelNotFoundException $e) {
             $this->newLine();
             $this->warn('No roles detected! Try to launch the seeder to create them: "php artisan db:seed --class=\'Database\Seeders\Production\RoleSeeder\'"');
@@ -91,7 +89,7 @@ class CreateUser extends Command
         }
 
         $this->newLine();
-        $this->info('User successfully created! UUID: ' . $user->uuid);
+        $this->info('User successfully created! UUID: '.$user->uuid);
 
         return Command::SUCCESS;
     }

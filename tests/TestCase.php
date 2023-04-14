@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use App\Enums\Role;
 use App\Enums\Role as RoleEnum;
 use App\Models\User;
 use Database\Seeders\Production\RoleSeeder;

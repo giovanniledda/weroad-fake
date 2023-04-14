@@ -6,8 +6,8 @@ use App\Models\Tour;
 use App\Models\Travel;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
 use function now;
+use Tests\TestCase;
 
 class TourCreationTest extends TestCase
 {
@@ -16,13 +16,12 @@ class TourCreationTest extends TestCase
      */
     public function guests_cannot_create_new_tour_for_travels()
     {
-
         $travel = Travel::factory()->create();
 
         $uuid = $travel->uuid;
 
         $newTour = Tour::factory()->raw([
-            'travelId' => null
+            'travelId' => null,
         ]);
 
         $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
@@ -34,7 +33,6 @@ class TourCreationTest extends TestCase
      */
     public function editors_cannot_create_new_tour_for_travels()
     {
-
         $editor = $this->createEditor();
 
         Sanctum::actingAs($editor);
@@ -44,7 +42,7 @@ class TourCreationTest extends TestCase
         $uuid = $travel->uuid;
 
         $newTour = Tour::factory()->raw([
-            'travelId' => null
+            'travelId' => null,
         ]);
 
         $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)
@@ -57,7 +55,6 @@ class TourCreationTest extends TestCase
      */
     public function admins_can_create_new_tour_for_travels()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -87,12 +84,9 @@ class TourCreationTest extends TestCase
                 "endingDate": "2021-11-09",
                 "price": 199900
                 },
-         *
          */
-
         $response
-            ->assertJson(fn (AssertableJson $json) =>
-            $json->where('id', $createdTour->uuid)
+            ->assertJson(fn (AssertableJson $json) => $json->where('id', $createdTour->uuid)
                 ->where('travelId', $travel->uuid)
                 ->where('name', $newTour['name'])
                 ->where('startingDate', $newTour['startingDate'])
@@ -103,7 +97,7 @@ class TourCreationTest extends TestCase
 
         $this->assertDatabaseHas('tours', [
             'name' => $newTour['name'],
-            'travelId' => $travel->id
+            'travelId' => $travel->id,
         ]);
     }
 
@@ -112,7 +106,6 @@ class TourCreationTest extends TestCase
      */
     public function name_field_for_new_tours_is_mandatory()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -122,7 +115,7 @@ class TourCreationTest extends TestCase
         $uuid = $travel->uuid;
 
         $newTour = Tour::factory()->raw([
-            'travelId' => null
+            'travelId' => null,
         ]);
 
         $tourOriginalName = $newTour['name'];
@@ -135,17 +128,15 @@ class TourCreationTest extends TestCase
 
         $this->assertDatabaseMissing('tours', [
             'name' => $tourOriginalName,
-            'travelId' => $travel->id
+            'travelId' => $travel->id,
         ]);
     }
-
 
     /**
      * @test
      */
     public function date_fields_for_new_tours_are_mandatory()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -155,7 +146,7 @@ class TourCreationTest extends TestCase
         $uuid = $travel->uuid;
 
         $newTour = Tour::factory()->raw([
-            'travelId' => null
+            'travelId' => null,
         ]);
 
         $tourOriginalStartingDate = $newTour['startingDate'];
@@ -176,7 +167,7 @@ class TourCreationTest extends TestCase
         $this->assertDatabaseMissing('tours', [
             'startingDate' => $tourOriginalStartingDate,
             'endingDate' => $tourOriginalEndingDate,
-            'travelId' => $travel->id
+            'travelId' => $travel->id,
         ]);
     }
 
@@ -185,7 +176,6 @@ class TourCreationTest extends TestCase
      */
     public function starting_date_field_for_new_tours_must_be_in_the_future()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -196,7 +186,7 @@ class TourCreationTest extends TestCase
 
         $newTour = Tour::factory()->raw([
             'travelId' => null,
-            'startingDate' => now()->subDays(7)
+            'startingDate' => now()->subDays(7),
         ]);
 
         $tourOriginalStartingDate = $newTour['startingDate'];
@@ -213,17 +203,15 @@ class TourCreationTest extends TestCase
         $this->assertDatabaseMissing('tours', [
             'startingDate' => $tourOriginalStartingDate,
             'endingDate' => $tourOriginalEndingDate,
-            'travelId' => $travel->id
+            'travelId' => $travel->id,
         ]);
     }
-
 
     /**
      * @test
      */
     public function ending_date_field_for_new_tours_must_be_after_starting_date()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -235,7 +223,7 @@ class TourCreationTest extends TestCase
         $newTour = Tour::factory()->raw([
             'travelId' => null,
             'startingDate' => now()->addMonths(7),
-            'endingDate' => now()
+            'endingDate' => now(),
         ]);
 
         $tourOriginalStartingDate = $newTour['startingDate'];
@@ -249,17 +237,15 @@ class TourCreationTest extends TestCase
         $this->assertDatabaseMissing('tours', [
             'startingDate' => $tourOriginalStartingDate,
             'endingDate' => $tourOriginalEndingDate,
-            'travelId' => $travel->id
+            'travelId' => $travel->id,
         ]);
     }
-
 
     /**
      * @test
      */
     public function price_field_for_new_tours_is_mandatory()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -269,7 +255,7 @@ class TourCreationTest extends TestCase
         $uuid = $travel->uuid;
 
         $newTour = Tour::factory()->raw([
-            'travelId' => null
+            'travelId' => null,
         ]);
 
         $tourOriginalPrice = $newTour['price'];
@@ -282,8 +268,7 @@ class TourCreationTest extends TestCase
 
         $this->assertDatabaseMissing('tours', [
             'price' => $tourOriginalPrice,
-            'travelId' => $travel->id
+            'travelId' => $travel->id,
         ]);
     }
-
 }

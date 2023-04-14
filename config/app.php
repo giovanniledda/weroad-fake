@@ -214,5 +214,5 @@ return [
 
     'cache_duration_in_secs' => 60 * 60 * 24 * 7, // 1 week
 
-    'page_size' => 10
+    'page_size' => 10,
 ];

@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use App\Traits\HasPublicUuids;
+use function define;
+use function defined;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use function define;
-use function defined;
-use function is_null;
 
 defined('ENOUGH_HUGE_PRICE') or define('ENOUGH_HUGE_PRICE', 100000000000000000);
 
@@ -21,8 +20,8 @@ class Tour extends Model
     protected $table = 'tours';
 
     protected $casts = [
-//        'startingDate' => 'date:Y-m-d',
-//        'endingDate' => 'date:Y-m-d',
+        //        'startingDate' => 'date:Y-m-d',
+        //        'endingDate' => 'date:Y-m-d',
     ];
 
     protected $guarded = [
@@ -61,20 +60,18 @@ class Tour extends Model
 
     public function scopeByPrice(Builder $builder, ?int $start = null, ?int $end = null): void
     {
-
-        $builder->when(!empty($start), function ($builder) use ($start) {
+        $builder->when(! empty($start), function ($builder) use ($start) {
             $builder->where('price', '>=', $start * 100);
-        })->when(!empty($end), function ($builder) use ($end) {
+        })->when(! empty($end), function ($builder) use ($end) {
             $builder->where('price', '<=', $end * 100);
         });
     }
 
     public function scopeByStartingDate(Builder $builder, ?string $from = null, ?string $to = null): void
     {
-
-        $builder->when(!empty($from), function ($builder) use ($from) {
+        $builder->when(! empty($from), function ($builder) use ($from) {
             $builder->where('startingDate', '>=', $from);
-        })->when(!empty($to), function ($builder) use ($to) {
+        })->when(! empty($to), function ($builder) use ($to) {
             $builder->where('startingDate', '<=', $to);
         });
     }

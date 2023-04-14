@@ -4,22 +4,22 @@ namespace Tests\Feature\Api;
 
 use App\Models\Tour;
 use App\Models\Travel;
-use Tests\TestCase;
-use Illuminate\Testing\Fluent\AssertableJson;
 use function collect;
 use function config;
+use Illuminate\Testing\Fluent\AssertableJson;
 use function now;
 use function range;
+use Tests\TestCase;
 
 class TourlListTest extends TestCase
 {
     /**
      * @test
+     *
      * @dataProvider pages
      */
     public function guests_can_access_all_tours_paginated_by_travel_slug(array $paginationData)
     {
-
         $travel = Travel::factory()->create();
 
         collect(range(1, 100))->each(function ($index) use ($travel) {
@@ -28,7 +28,7 @@ class TourlListTest extends TestCase
                     'travelId' => $travel->id,
                     'startingDate' => now()->addMonths($index),
                     'endingDate' => now()->addMonths($index + 1),
-                ]);;
+                ]);
         });
 
         $tours = Tour::orderBy('startingDate')->get();
@@ -38,7 +38,7 @@ class TourlListTest extends TestCase
         $travelSlug = $travel->slug;
 
         // testing wrong slug
-        $this->getJson("api/v1/travels/i-am-an-invalid-slug/tours")
+        $this->getJson('api/v1/travels/i-am-an-invalid-slug/tours')
             ->assertStatus(404);
 
         $response = $this->getJson("api/v1/travels/{$travelSlug}/tours")
@@ -55,14 +55,11 @@ class TourlListTest extends TestCase
          * "price": 199900
          * },
          * [...]
-         *
          */
-
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
                 $json->where("data.$index.id", $tours[$index]->uuid)
                     ->where("data.$index.travelId", $travelUuid)
                     ->where("data.$index.name", $tours[$index]->name)
@@ -84,8 +81,7 @@ class TourlListTest extends TestCase
         $end = ($page * config('app.page_size')) - 1;
 
         // results must be next X Travels, where X is the page_size
-        $response2->assertJson(fn(AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travelUuid, $tours, $json) {
-
+        $response2->assertJson(fn (AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travelUuid, $tours, $json) {
             $jsonIndex = $index - config('app.page_size') * ($page - 1);
 
             $json->where("data.$jsonIndex.id", $tours[$index]->uuid)
@@ -99,14 +95,12 @@ class TourlListTest extends TestCase
         );
     }
 
-
     /**
      * @test
      */
 //     * @dataProvider pages
     public function guests_can_access_all_tours_paginated_by_travel_slug_filtered_by_price(/*array $paginationData*/)
     {
-
         $travel = Travel::factory()->create();
 
         // 10 tours at price 300
@@ -117,7 +111,7 @@ class TourlListTest extends TestCase
                     'startingDate' => now()->addMonths($index),
                     'endingDate' => now()->addMonths($index + 1),
                     'price' => 300,
-                ]);;
+                ]);
         });
 
         // 15 tours at price 900
@@ -128,7 +122,7 @@ class TourlListTest extends TestCase
                     'startingDate' => now()->addMonths($index),
                     'endingDate' => now()->addMonths($index + 1),
                     'price' => 900,
-                ]);;
+                ]);
         });
 
         $tours = Tour::orderBy('startingDate')->get();
@@ -144,8 +138,7 @@ class TourlListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
                     ->whereNot("data.$index.price", 900)
                     ->etc();
@@ -158,8 +151,7 @@ class TourlListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 900)
                     ->whereNot("data.$index.price", 300)
                     ->etc();
@@ -172,15 +164,13 @@ class TourlListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
                     ->whereNot("data.$index.price", 900)
                     ->etc();
             }));
 
         // todo: missing "to" filter
-
     }
 
     /**
@@ -189,7 +179,6 @@ class TourlListTest extends TestCase
 //     * @dataProvider pages
     public function guests_can_access_all_tours_paginated_by_travel_slug_filtered_by_starting_date(/*array $paginationData*/)
     {
-
         $travel = Travel::factory()->create();
 
         // 10 tours in june 2024
@@ -200,7 +189,7 @@ class TourlListTest extends TestCase
                     'startingDate' => '2024-06-01',
                     'endingDate' => '2024-06-30',
                     'price' => 300,
-                ]);;
+                ]);
         });
 
         // 15 tours in june 2025
@@ -211,7 +200,7 @@ class TourlListTest extends TestCase
                     'startingDate' => '2025-06-01',
                     'endingDate' => '2025-06-30',
                     'price' => 900,
-                ]);;
+                ]);
         });
 
         $tours = Tour::orderBy('startingDate')->get();
@@ -227,8 +216,7 @@ class TourlListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($json) {
                 $json->where("data.$index.startingDate", '2024-06-01')
                     ->where("data.$index.endingDate", '2024-06-30')
                     ->whereNot("data.$index.startingDate", '2025-06-01')
@@ -243,8 +231,7 @@ class TourlListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($json) {
                 $json->where("data.$index.startingDate", '2025-06-01')
                     ->where("data.$index.endingDate", '2025-06-30')
                     ->whereNot("data.$index.startingDate", '2024-06-01')
@@ -259,8 +246,7 @@ class TourlListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($json) {
                 $json->where("data.$index.startingDate", '2024-06-01')
                     ->where("data.$index.endingDate", '2024-06-30')
                     ->whereNot("data.$index.startingDate", '2025-06-01')
@@ -276,7 +262,6 @@ class TourlListTest extends TestCase
      */
     public function tour_filters_must_respect_some_conventions()
     {
-
         $travel = Travel::factory()->create();
 
         $travelSlug = $travel->slug;
@@ -284,14 +269,12 @@ class TourlListTest extends TestCase
         // priceFrom must be numeric
         $this->getJson("api/v1/travels/{$travelSlug}/tours?priceFrom=blablabla")
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('priceFrom')
-        ;
+            ->assertJsonValidationErrorFor('priceFrom');
 
         // priceTo must be numeric
         $this->getJson("api/v1/travels/{$travelSlug}/tours?priceFrom=200&priceTo=blablabla")
             ->assertStatus(422)
-            ->assertJsonValidationErrorFor('priceTo')
-        ;
+            ->assertJsonValidationErrorFor('priceTo');
 
         // priceTo >= priceFrom
         $this->getJson("api/v1/travels/{$travelSlug}/tours?priceFrom=200&priceTo=50")
@@ -329,5 +312,4 @@ class TourlListTest extends TestCase
             [['page' => 10]],
         ];
     }
-
 }

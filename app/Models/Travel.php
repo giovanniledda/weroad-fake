@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Enums\Mood;
 use App\Traits\HasPublicUuids;
-use Illuminate\Database\Eloquent\Builder;
 use function collect;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,7 +30,7 @@ class Travel extends Model
     ];
 
     protected $appends = [
-//        'isPublic',
+        //        'isPublic',
     ];
 
     protected $casts = [

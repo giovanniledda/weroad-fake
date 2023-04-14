@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 
 trait HasPublicUuids
 {
-
     /**
      * Generate a primary UUID for the model.
      *

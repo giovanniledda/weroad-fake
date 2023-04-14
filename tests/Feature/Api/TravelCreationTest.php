@@ -3,7 +3,6 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Travel;
-use Illuminate\Console\View\Components\Task;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -15,7 +14,6 @@ class TravelCreationTest extends TestCase
      */
     public function guests_cannot_create_new_travels()
     {
-
         $travel = Travel::factory()->raw();
 
         $this->postJson('api/v1/travels', $travel)
@@ -27,7 +25,6 @@ class TravelCreationTest extends TestCase
      */
     public function editors_cannot_create_new_travels()
     {
-
         $travel = Travel::factory()->raw();
 
         $editor = $this->createEditor();
@@ -44,7 +41,6 @@ class TravelCreationTest extends TestCase
      */
     public function admins_can_create_new_travels()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -52,8 +48,7 @@ class TravelCreationTest extends TestCase
         $travel = Travel::factory()->raw();
 
         $response = $this->postJson('api/v1/travels', $travel)
-            ->assertStatus(201)
-        ;
+            ->assertStatus(201);
 
         $createdTravel = Travel::find(1);
 
@@ -76,8 +71,7 @@ class TravelCreationTest extends TestCase
          */
 
         $response
-            ->assertJson(fn (AssertableJson $json) =>
-            $json->where('id', $createdTravel->uuid)
+            ->assertJson(fn (AssertableJson $json) => $json->where('id', $createdTravel->uuid)
                 ->where('slug', $createdTravel->slug)
                 ->where('name', $travel['name'])
                 ->where('description', $travel['description'])
@@ -88,7 +82,7 @@ class TravelCreationTest extends TestCase
             );
 
         $this->assertDatabaseHas('travels', [
-            'name' => $travel['name']
+            'name' => $travel['name'],
         ]);
     }
 
@@ -97,7 +91,6 @@ class TravelCreationTest extends TestCase
      */
     public function name_field_for_new_travels_is_mandatory()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -113,7 +106,7 @@ class TravelCreationTest extends TestCase
             ->assertJsonValidationErrorFor('name');
 
         $this->assertDatabaseMissing('travels', [
-            'name' => $name
+            'name' => $name,
         ]);
     }
 
@@ -122,7 +115,6 @@ class TravelCreationTest extends TestCase
      */
     public function description_field_for_new_travels_is_mandatory()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -138,17 +130,15 @@ class TravelCreationTest extends TestCase
             ->assertJsonValidationErrorFor('description');
 
         $this->assertDatabaseMissing('travels', [
-            'description' => $description
+            'description' => $description,
         ]);
     }
-
 
     /**
      * @test
      */
     public function days_field_for_new_travels_is_mandatory()
     {
-
         $admin = $this->createAdmin();
 
         Sanctum::actingAs($admin);
@@ -164,8 +154,7 @@ class TravelCreationTest extends TestCase
             ->assertJsonValidationErrorFor('days');
 
         $this->assertDatabaseMissing('travels', [
-            'days' => $days
+            'days' => $days,
         ]);
     }
-
 }

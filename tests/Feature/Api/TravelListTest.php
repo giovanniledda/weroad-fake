@@ -3,21 +3,21 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Travel;
-use Tests\TestCase;
-use Illuminate\Testing\Fluent\AssertableJson;
 use function collect;
 use function config;
+use Illuminate\Testing\Fluent\AssertableJson;
 use function range;
+use Tests\TestCase;
 
 class TravelListTest extends TestCase
 {
     /**
      * @test
+     *
      * @dataProvider pages
      */
     public function guests_can_access_all_public_travels_paginated(array $paginationData)
     {
-
         $travels = Travel::factory()
             ->count(config('app.page_size') * 10)
             ->create();
@@ -47,8 +47,7 @@ class TravelListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travels, $json) {
-
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travels, $json) {
                 $json->where("data.$index.id", $travels[$index]->uuid)
                     ->where("data.$index.slug", $travels[$index]->slug)
                     ->where("data.$index.name", $travels[$index]->name)
@@ -70,8 +69,7 @@ class TravelListTest extends TestCase
         $end = ($page * config('app.page_size')) - 1;
 
         // results must be next X Travels, where X is the page_size
-        $response2->assertJson(fn(AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travels, $json) {
-
+        $response2->assertJson(fn (AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travels, $json) {
             $jsonIndex = $index - config('app.page_size') * ($page - 1);
 
             $json->where("data.$jsonIndex.id", $travels[$index]->uuid)
@@ -81,7 +79,7 @@ class TravelListTest extends TestCase
                 ->where("data.$jsonIndex.numberOfDays", $travels[$index]->days)
                 ->where("data.$jsonIndex.moods", $travels[$index]->moods['moods'])
                 ->etc();
-            })
+        })
         );
     }
 
@@ -100,5 +98,4 @@ class TravelListTest extends TestCase
             [['page' => 10]],
         ];
     }
-
 }
