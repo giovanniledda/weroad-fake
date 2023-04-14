@@ -41,18 +41,32 @@ class CreateUser extends Command
 
         $isAdmin = $this->option('admin');
 
-        // TODO: it's better to stop the prompt before the password if email validation fails
+        /** @var Validator $validator */
+        $validator = Validator::make([
+            'name' => $userFullName,
+            'email' => $userEmail,
+        ], [
+            'name' => ['required'],
+            'email' => ['required', 'email', 'unique:users,email'],
+        ]);
+
+        if ($validator->fails()) {
+            $this->newLine();
+            $this->warn('Some inputs are not valid. See error messages below:');
+
+            foreach ($validator->errors()->all() as $error) {
+                $this->error($error);
+            }
+
+            return 1;
+        }
 
         $password = $this->secret('Please, type a password for this user.');
 
         /** @var Validator $validator */
         $validator = Validator::make([
-            'name' => $userFullName,
-            'email' => $userEmail,
             'password' => $password,
         ], [
-            'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:8'],
         ]);
 
@@ -90,6 +104,11 @@ class CreateUser extends Command
 
         $this->newLine();
         $this->info('User successfully created! UUID: '.$user->uuid);
+
+        if ($isAdmin) {
+            $this->newLine();
+            $this->warn('Be careful, this user has ADMIN powers! 🦸🏻🦸🏻‍');
+        }
 
         return Command::SUCCESS;
     }
