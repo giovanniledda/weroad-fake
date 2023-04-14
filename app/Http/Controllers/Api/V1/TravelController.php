@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateTravelRequest;
 use App\Http\Resources\TourResource;
 use App\Http\Resources\TravelResource;
 use App\Models\Travel;
+use App\Services\FiltersValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Fluent;
@@ -77,22 +78,10 @@ class TravelController extends Controller
         return new TourResource($tour);
     }
 
-    public function getTours(Request $request, Travel $travel)
+    public function getTours(Request $request, Travel $travel, FiltersValidator $validator)
     {
-        $validator = Validator::make($request->only(['priceFrom', 'priceTo', 'dateFrom', 'dateTo', 'sortByPrice']),
-            [
-                'priceFrom' => 'numeric|nullable|sometimes',
-                'priceTo' => 'numeric|nullable|sometimes',
-                'dateFrom' => 'date_format:Y-m-d|nullable|sometimes',
-                'dateTo' => 'date_format:Y-m-d|nullable|sometimes|after:dateFrom',
-                'sortByPrice' => 'sometimes|in:asc,desc',
-            ])->sometimes('priceTo', 'gte:priceFrom', function (Fluent $input) {
-                return ! empty($input->priceFrom);
-            });
 
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
+        $validator->validate($request->only(['priceFrom', 'priceTo', 'dateFrom', 'dateTo', 'sortByPrice']));
 
         $orders = $travel
             ->tours()
