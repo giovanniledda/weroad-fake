@@ -30,14 +30,12 @@ class TravelDeleteTest extends TestCase
 
         $uuid = $travel->uuid;
 
-
         $editor = $this->createEditor();
 
         Sanctum::actingAs($editor);
 
         $response = $this->delete("api/v1/travels/{$uuid}")
             ->assertStatus(401);
-
     }
 
     /**
@@ -63,6 +61,5 @@ class TravelDeleteTest extends TestCase
         $this->assertDatabaseMissing('travels', [
             'uuid' => $uuid,
         ]);
-
     }
 }

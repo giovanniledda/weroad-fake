@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use function bcrypt;
 use App\Enums\Role as RoleEnum;
 use App\Models\User;
+use function bcrypt;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;

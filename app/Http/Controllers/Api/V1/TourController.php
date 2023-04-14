@@ -7,7 +7,6 @@ use App\Models\Tour;
 
 class TourController extends Controller
 {
-
     /**
      * Delete the specified resource
      *
@@ -21,5 +20,4 @@ class TourController extends Controller
             ->json([])
             ->setStatusCode(204);
     }
-
 }

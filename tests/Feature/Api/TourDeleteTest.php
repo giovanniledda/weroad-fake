@@ -36,7 +36,6 @@ class TourDeleteTest extends TestCase
 
         $response = $this->delete("api/v1/tours/{$uuid}")
             ->assertStatus(401);
-
     }
 
     /**
@@ -62,7 +61,5 @@ class TourDeleteTest extends TestCase
         $this->assertDatabaseMissing('tours', [
             'uuid' => $uuid,
         ]);
-
     }
-
 }
