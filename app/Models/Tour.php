@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\HasPublicUuids;
-use Illuminate\Support\Carbon;
 use function define;
 use function defined;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 defined('ENOUGH_HUGE_PRICE') or define('ENOUGH_HUGE_PRICE', 100000000000000000);
 

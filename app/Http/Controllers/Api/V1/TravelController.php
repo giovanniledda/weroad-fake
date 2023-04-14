@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use function config;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTourRequest;
 use App\Http\Requests\StoreTravelRequest;
@@ -10,6 +9,7 @@ use App\Http\Requests\UpdateTravelRequest;
 use App\Http\Resources\TourResource;
 use App\Http\Resources\TravelResource;
 use App\Models\Travel;
+use function config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Fluent;
@@ -75,8 +75,8 @@ class TravelController extends Controller
                 'dateTo' => 'date_format:Y-m-d|nullable|sometimes|after:dateFrom',
                 'sortByPrice' => 'sometimes|in:asc,desc',
             ])->sometimes('priceTo', 'gte:priceFrom', function (Fluent $input) {
-            return ! empty($input->priceFrom);
-        });
+                return ! empty($input->priceFrom);
+            });
 
         if ($validator->fails()) {
             throw new ValidationException($validator);

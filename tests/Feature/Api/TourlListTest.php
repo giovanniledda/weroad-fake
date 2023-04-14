@@ -4,14 +4,14 @@ namespace Tests\Feature\Api;
 
 use App\Models\Tour;
 use App\Models\Travel;
-use Illuminate\Support\Facades\Config;
 use function collect;
 use function config;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Testing\Fluent\AssertableJson;
 use function now;
 use function range;
-use Tests\TestCase;
 use function str;
+use Tests\TestCase;
 
 class TourlListTest extends TestCase
 {
@@ -63,7 +63,7 @@ class TourlListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travelUuid, $tours, $json) {
                 $json->where("data.$index.id", $tours[$index]->uuid)
                     ->where("data.$index.travelId", $travelUuid)
                     ->where("data.$index.name", $tours[$index]->name)
@@ -85,7 +85,7 @@ class TourlListTest extends TestCase
         $end = ($page * config('app.page_size')) - 1;
 
         // results must be next X Travels, where X is the page_size
-        $response2->assertJson(fn(AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travelUuid, $tours, $json) {
+        $response2->assertJson(fn (AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travelUuid, $tours, $json) {
             $jsonIndex = $index - config('app.page_size') * ($page - 1);
 
             $json->where("data.$jsonIndex.id", $tours[$index]->uuid)
@@ -141,14 +141,14 @@ class TourlListTest extends TestCase
 
         // from 0 to 9 because I have only 10 items at price 300...
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
                     ->whereNot("data.$index.price", 900)
                     ->etc();
             }))
             // ...testing that retrieved items are only 10
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.10.price")
-                ->missing("data.11.price")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.10.price')
+                ->missing('data.11.price')
                 // ...
                 ->etc()
             );
@@ -159,18 +159,17 @@ class TourlListTest extends TestCase
 
         // from 0 to 14 because I have only 15 items at price 900
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 14))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 14))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 900)
                     ->whereNot("data.$index.price", 300)
                     ->etc();
             }))
             // ...testing that retrieved items are only 15
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.15.price")
-                ->missing("data.16.price")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.15.price')
+                ->missing('data.16.price')
                 // ...
                 ->etc()
             );
-
 
         // TEST3: missing "from" filter
         $response = $this->getJson("api/v1/travels/{$travelSlug}/tours?priceTo=500")
@@ -178,14 +177,14 @@ class TourlListTest extends TestCase
 
         // from 0 to 9 because I have only 10 items at price 300...
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
                     ->whereNot("data.$index.price", 900)
                     ->etc();
             }))
             // ...testing that retrieved items are only 10
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.10.price")
-                ->missing("data.11.price")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.10.price')
+                ->missing('data.11.price')
                 // ...
                 ->etc()
             );
@@ -208,14 +207,14 @@ class TourlListTest extends TestCase
 
         // from 0 to 24 because now we're getting all the items
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 24))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 24))->each(function (int $index) use ($json) {
                 // still I'm not testing ordering, so I'm must check for both price values
-                $json->where("data.$index.price", fn(string $price) => (str($price)->is('300') || str($price)->is('900')))
+                $json->where("data.$index.price", fn (string $price) => (str($price)->is('300') || str($price)->is('900')))
                     ->etc();
             }))
             // ...testing that retrieved items are only 25
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.25.price")
-                ->missing("data.26.price")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.25.price')
+                ->missing('data.26.price')
                 // ...
                 ->etc()
             );
@@ -226,7 +225,6 @@ class TourlListTest extends TestCase
      */
     public function guests_can_access_all_tours_by_travel_slug_filtered_by_starting_date()
     {
-
         // I need to extend page_size for this test in order to have all items in one page
         Config::set('app.page_size', 1000);
 
@@ -264,7 +262,7 @@ class TourlListTest extends TestCase
 
         // from 0 to 9 because I have only 10 items at on 2024...
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
                 $json->where("data.$index.startingDate", '2024-06-01')
                     ->where("data.$index.endingDate", '2024-06-30')
                     ->whereNot("data.$index.startingDate", '2025-06-01')
@@ -272,8 +270,8 @@ class TourlListTest extends TestCase
                     ->etc();
             }))
             // ...testing that retrieved items are only 10
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.10.startingDate")
-                ->missing("data.11.startingDate")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.10.startingDate')
+                ->missing('data.11.startingDate')
                 // ...
                 ->etc()
             );
@@ -284,7 +282,7 @@ class TourlListTest extends TestCase
 
         // from 0 to 14 because I have only 10 items at on 2025...
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 14))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 14))->each(function (int $index) use ($json) {
                 $json->where("data.$index.startingDate", '2025-06-01')
                     ->where("data.$index.endingDate", '2025-06-30')
                     ->whereNot("data.$index.startingDate", '2024-06-01')
@@ -292,8 +290,8 @@ class TourlListTest extends TestCase
                     ->etc();
             }))
             // ...testing that retrieved items are only 15
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.15.startingDate")
-                ->missing("data.16.startingDate")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.15.startingDate')
+                ->missing('data.16.startingDate')
                 // ...
                 ->etc()
             );
@@ -304,7 +302,7 @@ class TourlListTest extends TestCase
 
         // from 0 to 9 because I have only 10 items at on 2024...
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
                 $json->where("data.$index.startingDate", '2024-06-01')
                     ->where("data.$index.endingDate", '2024-06-30')
                     ->whereNot("data.$index.startingDate", '2025-06-01')
@@ -312,8 +310,8 @@ class TourlListTest extends TestCase
                     ->etc();
             }))
             // ...testing that retrieved items are only 10
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.10.startingDate")
-                ->missing("data.11.startingDate")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.10.startingDate')
+                ->missing('data.11.startingDate')
                 // ...
                 ->etc()
             );
@@ -336,7 +334,7 @@ class TourlListTest extends TestCase
 
         // from 0 to 24 because now I have to get all items
         $response
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
                 // Item list is ordered by startingDate ASC, so...0-9 are in 2024
                 $json->where("data.$index.startingDate", '2024-06-01')
                     ->where("data.$index.endingDate", '2024-06-30')
@@ -344,7 +342,7 @@ class TourlListTest extends TestCase
                     ->whereNot("data.$index.endingDate", '2025-06-30')
                     ->etc();
             }))
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 10, end: 14))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 10, end: 14))->each(function (int $index) use ($json) {
                 // ...and 10-14 are in 2025
                 $json->whereNot("data.$index.startingDate", '2024-06-01')
                     ->whereNot("data.$index.endingDate", '2024-06-30')
@@ -353,17 +351,15 @@ class TourlListTest extends TestCase
                     ->etc();
             }))
             // ...testing that retrieved items are only 25
-            ->assertJson(fn(AssertableJson $json) => $json->missing("data.25.startingDate")
-                ->missing("data.26.startingDate")
+            ->assertJson(fn (AssertableJson $json) => $json->missing('data.25.startingDate')
+                ->missing('data.26.startingDate')
                 // ...
                 ->etc()
             );
-
     }
 
     /**
      * @test
-     *
      */
     public function guests_can_access_all_tours_by_travel_slug_ordered_by_price_asc()
     {
@@ -453,54 +449,51 @@ class TourlListTest extends TestCase
 
         $response
             // price 100 in 2026
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 4))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 4))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 100)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2026-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2026-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2026-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2026-*')))
                     ->etc();
             }))
             // price 100 in 2027
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 5, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 5, end: 9))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 100)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2027-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2027-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2027-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2027-*')))
                     ->etc();
             }))
             // price 300 in 2024
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 10, end: 14))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 10, end: 14))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2024-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2024-*')))
                     ->etc();
             }))
             // price 300 in 2025
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 15, end: 19))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 15, end: 19))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2025-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2025-*')))
                     ->etc();
             }))
             // price 900 in 2024
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 20, end: 24))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 20, end: 24))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 900)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2024-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2024-*')))
                     ->etc();
             }))
             // price 900 in 2025
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 25, end: 29))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 25, end: 29))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 900)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2025-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2025-*')))
                     ->etc();
-            }))
-        ;
+            }));
     }
-
 
     /**
      * @test
-     *
      */
     public function guests_can_access_all_tours_by_travel_slug_ordered_by_price_desc()
     {
@@ -590,48 +583,47 @@ class TourlListTest extends TestCase
 
         $response
             // price 900 in 2024
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 4))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 4))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 900)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2024-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2024-*')))
                     ->etc();
             }))
             // price 900 in 2025
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 5, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 5, end: 9))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 900)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2025-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2025-*')))
                     ->etc();
             }))
             // price 300 in 2024
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 10, end: 14))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 10, end: 14))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2024-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2024-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2024-*')))
                     ->etc();
             }))
             // price 300 in 2025
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 15, end: 19))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 15, end: 19))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 300)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2025-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2025-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2025-*')))
                     ->etc();
             }))
             // price 100 in 2026
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 20, end: 24))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 20, end: 24))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 100)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2026-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2026-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2026-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2026-*')))
                     ->etc();
             }))
             // price 100 in 2027
-            ->assertJson(fn(AssertableJson $json) => collect(range(start: 25, end: 29))->each(function (int $index) use ($json) {
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 25, end: 29))->each(function (int $index) use ($json) {
                 $json->where("data.$index.price", 100)
-                    ->where("data.$index.startingDate", fn(string $price) => (str($price)->is('2027-*')))
-                    ->where("data.$index.endingDate", fn(string $price) => (str($price)->is('2027-*')))
+                    ->where("data.$index.startingDate", fn (string $price) => (str($price)->is('2027-*')))
+                    ->where("data.$index.endingDate", fn (string $price) => (str($price)->is('2027-*')))
                     ->etc();
-            }))
-        ;
+            }));
     }
 
     /**
@@ -683,8 +675,6 @@ class TourlListTest extends TestCase
         $this->getJson("api/v1/travels/{$travelSlug}/tours?sortByPrice=bla")
             ->assertStatus(422)
             ->assertJsonValidationErrorFor('sortByPrice');
-
-
     }
 
     public function pages(): array

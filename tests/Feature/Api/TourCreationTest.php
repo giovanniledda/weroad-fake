@@ -7,7 +7,6 @@ use App\Models\Travel;
 use Illuminate\Support\Carbon;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
-use function fake;
 use function now;
 use Tests\TestCase;
 
@@ -338,7 +337,6 @@ class TourCreationTest extends TestCase
             'travelId' => $travel->id,
         ]);
     }
-
 
     /**
      * @test
