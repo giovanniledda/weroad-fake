@@ -62,7 +62,7 @@ A public (no auth) endpoint to get a list of paginated travels. It returns only 
 If an authenticated user accesses the API, then **also private travels will be shown**.
 
 ```http
-GET|HEAD        api/v1/travels
+GET or HEAD        api/v1/travels
 ```
 
 | Parameter | Type     | Description                |
@@ -89,7 +89,7 @@ POST            api/v1/travels
 A private (editor) endpoint to update a travel.
 
 ```http
-PUT|PATCH       api/v1/travels/{travel}
+PUT or PATCH       api/v1/travels/{travel}
 ```
 
 | Parameter | Type     | Description                |
@@ -150,7 +150,7 @@ POST            api/v1/travels/{travel}/tour
 A public (no auth) endpoint to get a list of paginated tours by the travel `slug` (e.g. all the tours of the travel `foo-bar`). Users can filter (search) the results by `priceFrom`, `priceTo`, `dateFrom` (from that `startingDate`) and `dateTo` (until that `startingDate`). User can sort the list by `price` asc and desc. They will **always** be sorted, after every additional user-provided filter, by `startingDate` asc.
 
 ```http
-GET|HEAD        api/v1/travels/{travelSlug}/tours
+GET or HEAD        api/v1/travels/{travelSlug}/tours
 ```
 
 | Parameter | Type     | Description                |
