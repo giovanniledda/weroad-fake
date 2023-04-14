@@ -18,8 +18,8 @@ final class FiltersValidator
                 'dateTo' => 'date_format:Y-m-d|nullable|sometimes|after:dateFrom',
                 'sortByPrice' => 'sometimes|in:asc,desc',
             ])->sometimes('priceTo', 'gte:priceFrom', function (Fluent $input) {
-            return ! empty($input->priceFrom);
-        });
+                return ! empty($input->priceFrom);
+            });
 
         if ($validator->fails()) {
             throw new ValidationException($validator);

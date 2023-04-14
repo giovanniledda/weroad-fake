@@ -11,9 +11,6 @@ use App\Http\Resources\TravelResource;
 use App\Models\Travel;
 use App\Services\FiltersValidator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Fluent;
-use Illuminate\Validation\ValidationException;
 
 class TravelController extends Controller
 {
@@ -80,7 +77,6 @@ class TravelController extends Controller
 
     public function getTours(Request $request, Travel $travel, FiltersValidator $validator)
     {
-
         $validator->validate($request->only(['priceFrom', 'priceTo', 'dateFrom', 'dateTo', 'sortByPrice']));
 
         $orders = $travel
