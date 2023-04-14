@@ -1,7 +1,6 @@
 # WeRoadFake
 
-A brief description of how to setup the project.
-
+How to set up the project in a nutshell.
 
 ## Installation
 
