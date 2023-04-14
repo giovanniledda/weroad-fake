@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Travel;
+use Laravel\Sanctum\Sanctum;
 use function collect;
 use function config;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -26,7 +27,7 @@ class TravelListTest extends TestCase
             ->assertStatus(200);
 
         $response
-            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
+            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
                 $json
                     ->missing("data.$index.id")
                     ->missing("data.$index.slug")
@@ -44,7 +45,7 @@ class TravelListTest extends TestCase
             ->assertStatus(200);
 
         $response
-            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($publicTravels, $json) {
+            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($publicTravels, $json) {
                 $json->where("data.$index.id", $publicTravels[$index]->uuid)
                     ->where("data.$index.slug", $publicTravels[$index]->slug)
                     ->where("data.$index.name", $publicTravels[$index]->name)
@@ -55,6 +56,41 @@ class TravelListTest extends TestCase
             })
             );
     }
+
+
+    /**
+     * @test
+     */
+    public function authenticated_users_can_access_private_travels()
+    {
+        Travel::factory()
+            ->private()
+            ->count(10)
+            ->create();
+
+        $admin = $this->createAdmin();
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->getJson('api/v1/travels')
+            ->assertStatus(200);
+
+        $privateTravels = Travel::orderBy('id')->get();
+
+        $response
+            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($privateTravels, $json) {
+                $json
+                    ->where("data.$index.id", $privateTravels[$index]->uuid)
+                    ->where("data.$index.slug", $privateTravels[$index]->slug)
+                    ->where("data.$index.name", $privateTravels[$index]->name)
+                    ->where("data.$index.description", $privateTravels[$index]->description)
+                    ->where("data.$index.numberOfDays", $privateTravels[$index]->days)
+                    ->where("data.$index.moods", $privateTravels[$index]->moods['moods'])
+                    ->etc();
+            })
+            );
+    }
+
 
     /**
      * @test
@@ -92,7 +128,7 @@ class TravelListTest extends TestCase
         $end = config('app.page_size') - 1;
 
         $response
-            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travels, $json) {
+            ->assertJson(fn(AssertableJson $json) => collect(range(start: 0, end: $end))->each(function (int $index) use ($travels, $json) {
                 $json->where("data.$index.id", $travels[$index]->uuid)
                     ->where("data.$index.slug", $travels[$index]->slug)
                     ->where("data.$index.name", $travels[$index]->name)
@@ -106,7 +142,7 @@ class TravelListTest extends TestCase
         // test pagination
         $page = $paginationData['page'];
 
-        $response2 = $this->getJson('api/v1/travels?page='.$page)
+        $response2 = $this->getJson('api/v1/travels?page=' . $page)
             ->assertStatus(200);
 
         $start = ($page - 1) * config('app.page_size');
@@ -114,7 +150,7 @@ class TravelListTest extends TestCase
         $end = ($page * config('app.page_size')) - 1;
 
         // results must be next X Travels, where X is the page_size
-        $response2->assertJson(fn (AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travels, $json) {
+        $response2->assertJson(fn(AssertableJson $json) => collect(range(start: $start, end: $end))->each(function (int $index) use ($page, $travels, $json) {
             $jsonIndex = $index - config('app.page_size') * ($page - 1);
 
             $json->where("data.$jsonIndex.id", $travels[$index]->uuid)

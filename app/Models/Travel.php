@@ -3,14 +3,18 @@
 namespace App\Models;
 
 use App\Enums\Mood;
+use App\Observers\ProjectObserver;
 use App\Traits\HasPublicUuids;
+use function auth;
 use function collect;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use function config;
 use function now;
+use const PERMISSION_SUPER_ADMIN;
 
 class Travel extends Model
 {
@@ -27,10 +31,6 @@ class Travel extends Model
     protected $hidden = [
         'id',
         'publicationDate',
-    ];
-
-    protected $appends = [
-        //        'isPublic',
     ];
 
     protected $casts = [
@@ -106,5 +106,13 @@ class Travel extends Model
         ]);
 
         return $this;
+    }
+
+    public static function getPaginatedList()
+    {
+        return Travel::when(!auth()->check(), function ($builder) {
+            $builder->public();
+        })->orderBy('id')
+            ->fastPaginate(config('app.page_size'));
     }
 }

@@ -20,11 +20,6 @@ class Tour extends Model
 
     protected $table = 'tours';
 
-    protected $casts = [
-        //        'startingDate' => 'date:Y-m-d',
-        //        'endingDate' => 'date:Y-m-d',
-    ];
-
     protected $guarded = [
         'id',
     ];

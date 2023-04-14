@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Validation\Rule;
 use function config;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTourRequest;
@@ -25,7 +24,7 @@ class TravelController extends Controller
      */
     public function index()
     {
-        return TravelResource::collection(Travel::public()->fastPaginate(config('app.page_size')));
+        return TravelResource::collection(Travel::getPaginatedList());
     }
 
     /**
