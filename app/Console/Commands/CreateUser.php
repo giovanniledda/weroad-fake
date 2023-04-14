@@ -75,10 +75,10 @@ class CreateUser extends Command
 
         try {
             if ($isAdmin) {
-                $user->assignRole(RoleEnum::Admin);
+                $user->assignRole(RoleEnum::Admin->value);
             }
 
-            $user->assignRole(RoleEnum::Editor);
+            $user->assignRole(RoleEnum::Editor->value);
         } catch (ModelNotFoundException $e) {
             $this->newLine();
             $this->warn('No roles detected! Try to launch the seeder to create them: "php artisan db:seed --class=\'Database\Seeders\Production\RoleSeeder\'"');

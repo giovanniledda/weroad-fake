@@ -31,11 +31,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // API route for logout user
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // TODO: refactor
-//    Route::controller(TravelController::class)->group(function () {
-//
-//    });
-
     // A private (editor) endpoint to update a travel
     Route::middleware('role:'.Role::Editor->value)->group(function () {
         Route::resource('travels', TravelController::class)->only([
