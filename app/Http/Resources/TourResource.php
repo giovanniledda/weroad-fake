@@ -16,7 +16,7 @@ class TourResource extends JsonResource
     {
         return [
             'id' => $this->uuid,
-            'travelId' => $this->travel->uuid,
+            'travelId' => $this->travel?->uuid,
             'name' => $this->name,
             'startingDate' => $this->startingDate,
             'endingDate' => $this->endingDate,
