@@ -222,7 +222,7 @@ class TourCreationTest extends TestCase
 
         // forcing endingDate
         $newTour['name'] = Tour::factory()->raw()['name'];
-        
+
         $newTour['endingDate'] = $tourOriginalEndingDate;
 
         $this->postJson("api/v1/travels/{$uuid}/tour", $newTour)

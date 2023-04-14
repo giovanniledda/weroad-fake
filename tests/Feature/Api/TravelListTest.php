@@ -11,6 +11,51 @@ use Tests\TestCase;
 
 class TravelListTest extends TestCase
 {
+
+    /**
+     * @test
+     */
+    public function guests_cannot_access_private_travels()
+    {
+        Travel::factory()
+            ->private()
+            ->count(10)
+            ->create();
+
+        $response = $this->getJson('api/v1/travels')
+            ->assertStatus(200);
+
+        $response
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($json) {
+                $json
+                    ->missing("data.$index.id")
+                    ->missing("data.$index.slug")
+                    ->etc();
+            })
+            );
+
+        // Now, that public travels have been created...
+        $publicTravels = Travel::factory()
+            ->count(10)
+            ->create();
+
+        // ...I'll retrieve the list again.
+        $response = $this->getJson('api/v1/travels')
+            ->assertStatus(200);
+
+        $response
+            ->assertJson(fn (AssertableJson $json) => collect(range(start: 0, end: 9))->each(function (int $index) use ($publicTravels, $json) {
+                $json->where("data.$index.id", $publicTravels[$index]->uuid)
+                    ->where("data.$index.slug", $publicTravels[$index]->slug)
+                    ->where("data.$index.name", $publicTravels[$index]->name)
+                    ->where("data.$index.description", $publicTravels[$index]->description)
+                    ->where("data.$index.numberOfDays", $publicTravels[$index]->days)
+                    ->where("data.$index.moods", $publicTravels[$index]->moods['moods'])
+                    ->etc();
+            })
+            );
+    }
+
     /**
      * @test
      *
