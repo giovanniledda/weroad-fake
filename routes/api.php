@@ -41,7 +41,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // A private (admin) endpoint to create new travels;
     Route::middleware('role:'.Role::Admin->value)->group(function () {
         Route::resource('travels', TravelController::class)->only([
-            'store',
+            'store', 'destroy'
         ]);
 
         Route::post('/travels/{travel}/tour', [TravelController::class, 'createTour'])->name('travels.createTour');

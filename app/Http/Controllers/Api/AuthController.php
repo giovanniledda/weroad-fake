@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use function response;
 
 class AuthController extends Controller
 {
@@ -38,8 +39,9 @@ class AuthController extends Controller
     {
         auth('sanctum')->user()->tokens()->delete();
 
-        return [
-            'message' => 'You have successfully logged out and the token was successfully deleted',
-        ];
+        return response()
+            ->json([
+                'message' => 'You have successfully logged out and the token was successfully deleted',
+            ]);
     }
 }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('price')->nullable();
 
             // Relationship: Travel
-            $table->foreignId('travelId')->constrained('travels');
+            $table->foreignId('travelId')->constrained('travels')->onDelete('cascade');
 
             // Indexes
             $table->index(['price', 'startingDate']);

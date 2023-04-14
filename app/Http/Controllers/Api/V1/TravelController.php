@@ -9,7 +9,6 @@ use App\Http\Requests\UpdateTravelRequest;
 use App\Http\Resources\TourResource;
 use App\Http\Resources\TravelResource;
 use App\Models\Travel;
-use function config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Fluent;
@@ -55,6 +54,20 @@ class TravelController extends Controller
         return new TravelResource($travel);
     }
 
+    /**
+     * Delete the specified resource
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Travel $travel)
+    {
+        $travel->delete();
+
+        return response()
+            ->json([])
+            ->setStatusCode(204);
+    }
+
     public function createTour(StoreTourRequest $request, Travel $travel)
     {
         $validated = $request->validated();
@@ -66,7 +79,6 @@ class TravelController extends Controller
 
     public function getTours(Request $request, Travel $travel)
     {
-        // TODO: validate filters con una FormRequest
         $validator = Validator::make($request->only(['priceFrom', 'priceTo', 'dateFrom', 'dateTo', 'sortByPrice']),
             [
                 'priceFrom' => 'numeric|nullable|sometimes',
