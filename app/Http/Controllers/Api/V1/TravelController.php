@@ -44,7 +44,7 @@ class TravelController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return TravelResource
      */
     public function update(UpdateTravelRequest $request, Travel $travel)
     {
