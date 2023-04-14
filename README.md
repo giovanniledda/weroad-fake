@@ -100,6 +100,34 @@ PUT|PATCH       api/v1/travels/{travel}
 | `days` | `integer` | **Required**. Number of days the travel lasts |
 
 
+
+#### Travel delete
+
+A private (admin) endpoint to delete a travel.
+
+```http
+DELETE       api/v1/travels/{travel}
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `travel` | `string` | **Required**. Travel's UUID |
+
+
+
+#### Tour delete
+
+A private (admin) endpoint to delete a tour.
+
+```http
+DELETE       api/v1/tours/{tour}
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `tour` | `string` | **Required**. Tour's UUID |
+
+
 #### Travel's Tour create
 
 A private (admin) endpoint to create new tours for a travel.

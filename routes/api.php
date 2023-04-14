@@ -2,6 +2,7 @@
 
 use App\Enums\Role;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\V1\TourController;
 use App\Http\Controllers\Api\V1\TravelController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // A private (admin) endpoint to create new travels;
     Route::middleware('role:'.Role::Admin->value)->group(function () {
+
+        Route::resource('tours', TourController::class)->only([
+            'destroy'
+        ]);
+
         Route::resource('travels', TravelController::class)->only([
             'store', 'destroy'
         ]);
