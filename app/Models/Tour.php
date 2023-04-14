@@ -62,23 +62,20 @@ class Tour extends Model
     public function scopeByPrice(Builder $builder, ?int $start = null, ?int $end = null): void
     {
 
-        if (!is_null($start)) {
+        $builder->when(!empty($start), function ($builder) use ($start) {
             $builder->where('price', '>=', $start * 100);
-        }
-
-        if (!is_null($end)) {
+        })->when(!empty($end), function ($builder) use ($end) {
             $builder->where('price', '<=', $end * 100);
-        }
+        });
     }
 
     public function scopeByStartingDate(Builder $builder, ?string $from = null, ?string $to = null): void
     {
-        if (!is_null($from)) {
-            $builder->where('startingDate', '>=', $from);
-        }
 
-        if (!is_null($to)) {
+        $builder->when(!empty($from), function ($builder) use ($from) {
+            $builder->where('startingDate', '>=', $from);
+        })->when(!empty($to), function ($builder) use ($to) {
             $builder->where('startingDate', '<=', $to);
-        }
+        });
     }
 }

@@ -187,7 +187,7 @@ class TourlListTest extends TestCase
      * @test
      */
 //     * @dataProvider pages
-    public function guests_can_access_all_tours_paginated_by_travel_slug_filtered_by_startng_date(/*array $paginationData*/)
+    public function guests_can_access_all_tours_paginated_by_travel_slug_filtered_by_starting_date(/*array $paginationData*/)
     {
 
         $travel = Travel::factory()->create();
@@ -269,6 +269,49 @@ class TourlListTest extends TestCase
             }));
 
         // todo: missing "to" filter
+    }
+
+    /**
+     * @test
+     */
+    public function tour_filters_must_respect_some_conventions()
+    {
+
+        $travel = Travel::factory()->create();
+
+        $travelSlug = $travel->slug;
+
+        // priceFrom must be numeric
+        $this->getJson("api/v1/travels/{$travelSlug}/tours?priceFrom=blablabla")
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('priceFrom')
+        ;
+
+        // priceTo must be numeric
+        $this->getJson("api/v1/travels/{$travelSlug}/tours?priceFrom=200&priceTo=blablabla")
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('priceTo')
+        ;
+
+        // priceTo >= priceFrom
+        $this->getJson("api/v1/travels/{$travelSlug}/tours?priceFrom=200&priceTo=50")
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('priceTo');
+
+        // dateFrom must be a valid (Y-m-d) date
+        $this->getJson("api/v1/travels/{$travelSlug}/tours?dateFrom=01-01-2025")
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('dateFrom');
+
+        // dateTo must be a valid (Y-m-d) date
+        $this->getJson("api/v1/travels/{$travelSlug}/tours?dateTo=2025-05-0109")
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('dateTo');
+
+        // dateTo >= dateFrom
+        $this->getJson("api/v1/travels/{$travelSlug}/tours?dateFrom=2025-05-01&dateTo=2024-07-01")
+            ->assertStatus(422)
+            ->assertJsonValidationErrorFor('dateTo');
     }
 
     public function pages(): array

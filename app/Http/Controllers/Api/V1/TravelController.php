@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Fluent;
+use Illuminate\Validation\ValidationException;
 use function config;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,7 +31,7 @@ class TravelController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreTravelRequest  $request
+     * @param \App\Http\Requests\StoreTravelRequest $request
      * @return TravelResource|\Illuminate\Http\Response
      */
     public function store(StoreTravelRequest $request)
@@ -43,8 +46,8 @@ class TravelController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateTravelRequest  $request
-     * @param  \App\Models\Travel  $travel
+     * @param \App\Http\Requests\UpdateTravelRequest $request
+     * @param \App\Models\Travel $travel
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateTravelRequest $request, Travel $travel)
@@ -69,19 +72,26 @@ class TravelController extends Controller
     {
 
         // TODO: validate filters con una FormRequest
-        
+        $validator = Validator::make($request->only(['priceFrom', 'priceTo', 'dateFrom','dateTo']),
+            [
+            'priceFrom' => 'numeric|nullable|sometimes',
+            'priceTo' => 'numeric|nullable|sometimes',
+            'dateFrom' => 'date_format:Y-m-d|nullable|sometimes',
+            'dateTo' => 'date_format:Y-m-d|nullable|sometimes|after:dateFrom',
+        ])->sometimes('priceTo', 'gte:priceFrom', function (Fluent $input) {
+            return !empty($input->priceFrom);
+        });
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
         $orders = $travel
-                    ->tours()
-//                    ->when($request->has('priceFrom') || $request->has('priceTo'), function ($builder) use ($request) {
-//                        $builder->byPrice(start: $request->get('priceFrom'), end: $request->get('priceTo'));
-//                    })
-//                    ->when($request->has('dateFrom') || $request->has('dateTo'), function ($builder) use ($request) {
-//                        $builder->byStartingDate(from: $request->get('dateFrom'), to: $request->get('dateTo'));
-//                    })
-                    ->byPrice(start: $request->get('priceFrom'), end: $request->get('priceTo'))
-                    ->byStartingDate(from: $request->get('dateFrom'), to: $request->get('dateTo'))
-                    ->orderBy('startingDate')
-                    ->fastPaginate(config('app.page_size'));
+            ->tours()
+            ->byPrice(start: $request->get('priceFrom'), end: $request->get('priceTo'))
+            ->byStartingDate(from: $request->get('dateFrom'), to: $request->get('dateTo'))
+            ->orderBy('startingDate')
+            ->fastPaginate(config('app.page_size'));
 
         return TourResource::collection($orders);
     }
