@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\Role as RoleEnum;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use function bcrypt;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -81,33 +82,37 @@ class CreateUser extends Command
             return 1;
         }
 
-        $user = User::create([
-            'name' => $userFullName,
-            'email' => $userEmail,
-            'password' => bcrypt($password),
-        ]);
-
         try {
-            if ($isAdmin) {
-                $user->assignRole(RoleEnum::Admin->value);
-            }
+            DB::transaction(function () use ($isAdmin, $password, $userEmail, $userFullName) {
 
-            $user->assignRole(RoleEnum::Editor->value);
-        } catch (ModelNotFoundException $e) {
+                $user = User::create([
+                    'name' => $userFullName,
+                    'email' => $userEmail,
+                    'password' => bcrypt($password),
+                ]);
+
+                if ($isAdmin) {
+                    $user->assignRole(RoleEnum::Admin->value);
+                }
+
+                $user->assignRole(RoleEnum::Editor->value);
+
+                $this->newLine();
+                $this->info('User successfully created! UUID: '.$user->uuid);
+
+                if ($isAdmin) {
+                    $this->newLine();
+                    $this->warn('Be careful, this user has ADMIN powers! 🦸🏻🦸🏻‍');
+                }
+
+            });
+        } catch (\Exception $e) {
             $this->newLine();
             $this->warn('No roles detected! Try to launch the seeder to create them: "php artisan db:seed --class=\'Database\Seeders\Production\RoleSeeder\'"');
 
-            $user->delete();
+//            $user->delete();
 
-            return 1;
-        }
-
-        $this->newLine();
-        $this->info('User successfully created! UUID: '.$user->uuid);
-
-        if ($isAdmin) {
-            $this->newLine();
-            $this->warn('Be careful, this user has ADMIN powers! 🦸🏻🦸🏻‍');
+            return Command::FAILURE;
         }
 
         return Command::SUCCESS;
